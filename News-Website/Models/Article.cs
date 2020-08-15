@@ -33,7 +33,7 @@ namespace News_Website.Models
         public virtual List<ArticleAuthor> ArticleAuthors { get; set; }
         public int TotalViews { get; set; }
         [NotMapped]
-        public string ContentEncoded { get; set; }
+        public string DraftContentEncoded { get; set; }
     }
 
     public class ArticleAuthor

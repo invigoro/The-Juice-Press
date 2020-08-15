@@ -78,15 +78,11 @@ namespace News_Website.Controllers
         [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
             var article = await db.Articles.FindAsync(id);
             if (article == null)
             {
-                return NotFound();
+                return View(new Article());
             }
             return View(article);
         }
@@ -99,9 +95,15 @@ namespace News_Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published")] Article article)
         {
-            if (id != article.ArticleId)
+            if (id != article.ArticleId || id == 0) //creating a new article
             {
-                return NotFound();
+                if (ModelState.IsValid)
+                {
+                    db.Add(article);
+                    await db.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(article);
             }
 
             if (ModelState.IsValid)
