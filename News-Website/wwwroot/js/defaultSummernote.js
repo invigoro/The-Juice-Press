@@ -1,8 +1,8 @@
 ﻿$(function () {
     var def = $(".summernote").val();
-    $("#DescriptionEncoded").val(encodeURIComponent(def));
+    $("#DraftContentEncoded").val(encodeURIComponent(def));
     $(".summernote").summernote({
-        height: 180,
+        height: 500,
         toolbar: [
             ['style', ['bold', 'italic', 'underline', 'clear']],
             ['font', ['strikethrough', 'superscript', 'subscript']],
@@ -13,7 +13,7 @@
         ],
         callbacks: {
             onChange: function (contents, $editable) {
-                $("#DescriptionEncoded").val(encodeURIComponent(contents));
+                $("#DraftContentEncoded").val(encodeURIComponent(contents));
             }
         }
     });
