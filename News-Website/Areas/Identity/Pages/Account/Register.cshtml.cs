@@ -46,6 +46,10 @@ namespace News_Website.Areas.Identity.Pages.Account
 
         public class InputModel
         {
+            [StringLength(100)]
+            [Required]
+            [Display(Name = "Display Name")]
+            public string DisplayName { get; set; }
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
@@ -75,7 +79,12 @@ namespace News_Website.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new User { UserName = Input.Email, Email = Input.Email };
+                var user = new User
+                {
+                    DisplayName = Input.DisplayName,
+                    UserName = Input.Email,
+                    Email = Input.Email
+                };
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {
@@ -86,7 +95,7 @@ namespace News_Website.Areas.Identity.Pages.Account
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
+                        values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
@@ -94,7 +103,7 @@ namespace News_Website.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email });
                     }
                     else
                     {
