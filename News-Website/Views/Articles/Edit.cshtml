@@ -1,0 +1,81 @@
+﻿@model News_Website.Models.Article
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h4>Edit Article</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Edit" class="row">
+            <div class="col-md-4">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ArticleId" />
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Content" class="control-label"></label>
+                    <input asp-for="Content" class="form-control" />
+                    <span asp-validation-for="Content" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DraftContent" class="control-label"></label>
+                    <input asp-for="DraftContent" class="form-control" />
+                    <span asp-validation-for="DraftContent" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CreatedOn" class="control-label"></label>
+                    <input asp-for="CreatedOn" class="form-control" />
+                    <span asp-validation-for="CreatedOn" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="EditedOn" class="control-label"></label>
+                    <input asp-for="EditedOn" class="form-control" />
+                    <span asp-validation-for="EditedOn" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="PublishedOn" class="control-label"></label>
+                    <input asp-for="PublishedOn" class="form-control" />
+                    <span asp-validation-for="PublishedOn" class="text-danger"></span>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
+                    </label>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-group">
+                        <label asp-for="Content" class="control-label"></label>
+                        <textarea asp-for="Content" class="form-control summernote"></textarea>
+                        <span asp-validation-for="Content" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="ContentEncoded" />
+
+                    <div class="form-group float-right">
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript" src="~/js/defaultSummernote.js"></script>
+}
