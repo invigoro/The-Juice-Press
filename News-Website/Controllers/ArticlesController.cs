@@ -66,32 +66,32 @@ namespace News_Website.Controllers
             return View(article);
         }
 
-        [Authorize]
-        // GET: Articles/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //[Authorize]
+        //// GET: Articles/Create
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
-        [Authorize]
-        // POST: Articles/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published")] Article article)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Add(article);
-                await db.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(article);
-        }
+        //[Authorize]
+        //// POST: Articles/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published")] Article article)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Add(article);
+        //        await db.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(article);
+        //}
 
         // GET: Articles/Edit/5
-        [Authorize]
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         public async Task<IActionResult> Edit(int? id)
         {
 
@@ -103,7 +103,7 @@ namespace News_Website.Controllers
             
             return View(article);
         }
-        [Authorize]
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         public async Task<IActionResult> _Edit(int? id)
         {
 
@@ -119,7 +119,7 @@ namespace News_Website.Controllers
         // POST: Articles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [Authorize]
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,ToPublish,FromAjax")] Article article)
@@ -195,7 +195,7 @@ namespace News_Website.Controllers
         }
 
         // GET: Articles/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -214,7 +214,7 @@ namespace News_Website.Controllers
         }
 
         // POST: Articles/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
