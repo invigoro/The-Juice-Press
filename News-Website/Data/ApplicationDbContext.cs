@@ -26,6 +26,8 @@ namespace News_Website.Data
                 .HasOne(x => x.User)
                 .WithMany(x => x.Articles)
                 .HasForeignKey(x => x.UserId);
+            builder.Entity<Article>()
+                .HasAlternateKey(x => x.UrlShortCode);
         }
     }
 }

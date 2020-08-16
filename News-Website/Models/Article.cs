@@ -10,11 +10,12 @@ namespace News_Website.Models
     public class Article
     {
         public int ArticleId { get; set; }
-        [StringLength(55)]
-        //public string UrlShortCode { get; set; }
-        //[StringLength(1000)]
+        [StringLength(10)]
+        public string UrlShortCode { get; set; }
+        [StringLength(1000)]
         public string Title { get; set; }
         public string Content { get; set; }
+        [Display(Name = "Content")]
         public string DraftContent { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime EditedOn { get; set; } = DateTime.UtcNow;
@@ -31,10 +32,23 @@ namespace News_Website.Models
         }
         [NotMapped]
         public bool ToPublish { get; set; }
+        [NotMapped]
+        public bool FromAjax { get; set; }
         public virtual List<ArticleAuthor> ArticleAuthors { get; set; }
         public int TotalViews { get; set; } = 0;
         [NotMapped]
         public string DraftContentEncoded { get; set; }
+        public ArticleCategory? Category { get; set; }
+    }
+
+    public enum ArticleCategory
+    {
+        [Display(Name = "Politics")]
+        Politics = 1000,
+        [Display(Name = "Sports")]
+        Sports = 2000,
+        [Display(Name = "Entertainment")]
+        Entertainment = 3000,
     }
 
     public class ArticleAuthor

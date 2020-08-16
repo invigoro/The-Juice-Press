@@ -1,0 +1,36 @@
+﻿@model News_Website.Models.Article
+
+@{
+    Layout = null;
+}
+
+        <form asp-action="Edit" class="row" id="edit-article">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="ArticleId" />
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DraftContent" class="control-label"></label>
+                    <textarea asp-for="DraftContent" class="form-control summernote"></textarea>
+                    <span asp-validation-for="DraftContent" class="text-danger"></span>
+                </div>
+                <input type="hidden" asp-for="DraftContentEncoded" />
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
+                    </label>
+                </div>
+                <input type="hidden" asp-for="ToPublish" />
+                <input type="hidden" asp-for="FromAjax" />
+
+                <div class="form-group float-right">
+                    <input type="submit" value="Save Draft & Close" class="btn btn-primary ml-2 mr-2" />
+                    <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2">Save Draft</button>
+                    <button type="button" id="save-and-publish" class="btn btn-primary ml-2 mr-2" title="Note: this will not make it viewable.">Save & Publish</button>
+                </div>
+            </div>
+        </form>

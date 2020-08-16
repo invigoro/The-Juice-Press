@@ -1,6 +1,17 @@
 ﻿@model News_Website.Models.Article
 
-<h1 class="text-justify">@Html.DisplayFor(x => x.Title)</h1>
+
+<div class="row">
+    <div class="col">
+        <h1 class="text-justify">@Html.DisplayFor(x => x.Title)</h1>
+    </div>
+    @if (User?.Identity != null)
+    {
+    <div class="col-auto">
+        <a asp-action="Edit" asp-route-id="@Model.ArticleId" class="btn btn-light"><i class="fas fa-edit"></i></a>
+    </div>
+    }
+</div>
 <div class="h6 text-dark">@Helpers.FormattedDaysAgo(Model.PublishedOn.Value)</div>
 <div class="">
     @Html.Raw(Model.Content)
