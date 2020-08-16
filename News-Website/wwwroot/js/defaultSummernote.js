@@ -1,4 +1,4 @@
-﻿$(function () {
+﻿function defaultSummerNote() {
     var def = $(".summernote").val();
     $("#DraftContentEncoded").val(encodeURIComponent(def));
     $(".summernote").summernote({
@@ -17,5 +17,11 @@
             }
         }
     });
+}
+
+$(function () {
+    
+    
+    defaultSummerNote();
     //$(".summernote").summernote("code", def );
 })
