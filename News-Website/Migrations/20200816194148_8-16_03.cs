@@ -4,7 +4,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace News_Website.Migrations
 {
-    public partial class initial : Migration
+    public partial class _816_03 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,17 +14,21 @@ namespace News_Website.Migrations
                 {
                     ArticleId = table.Column<int>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Title = table.Column<string>(maxLength: 55, nullable: true),
+                    UrlShortCode = table.Column<string>(maxLength: 10, nullable: false),
+                    Title = table.Column<string>(maxLength: 1000, nullable: true),
                     Content = table.Column<string>(nullable: true),
                     DraftContent = table.Column<string>(nullable: true),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     EditedOn = table.Column<DateTime>(nullable: false),
                     PublishedOn = table.Column<DateTime>(nullable: true),
-                    Published = table.Column<bool>(nullable: false)
+                    Published = table.Column<bool>(nullable: false),
+                    TotalViews = table.Column<int>(nullable: false),
+                    Category = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Articles", x => x.ArticleId);
+                    table.UniqueConstraint("AK_Articles_UrlShortCode", x => x.UrlShortCode);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,7 +66,8 @@ namespace News_Website.Migrations
                     AccessFailedCount = table.Column<int>(nullable: false),
                     DisplayName = table.Column<string>(maxLength: 255, nullable: true),
                     FirstName = table.Column<string>(maxLength: 255, nullable: true),
-                    LastName = table.Column<string>(maxLength: 255, nullable: true)
+                    LastName = table.Column<string>(maxLength: 255, nullable: true),
+                    ProfilePicture = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
