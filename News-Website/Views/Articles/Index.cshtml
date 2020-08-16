@@ -20,7 +20,7 @@
         <div class="row mt-4 mb-4 pb-2 border-bottom">
             <div class="col-12">
                 <a asp-controller="Articles" asp-action="Details" asp-route-id="@a.ArticleId" class="article-link">
-                <h2>@a.Title</h2>
+                <h2>@(a.Title)@(a.Published ? "" : " (Draft)")</h2>
                 <div class="overflow-hidden" style="max-height: 1.5rem;">@Html.Raw(a.Content)</div>
                     </a>
             </div>
