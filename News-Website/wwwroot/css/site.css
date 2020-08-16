@@ -41,13 +41,13 @@ a.navbar-brand {
     background-color: var(--orange-light-trans);
 }
 
-#navbar-logo:hover {
+/*#navbar-logo:hover {
     content: url("../img/logo-white-simple.png");
 }
 
 #navbar-logo {
     content: url("../img/logo-light-simple.png");
-}
+}*/
 /* Provide sufficient contrast against white background */
 a {
     color: #0366d6;
