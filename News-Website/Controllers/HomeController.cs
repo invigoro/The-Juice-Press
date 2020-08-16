@@ -3,23 +3,34 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using News_Website.Data;
 using News_Website.Models;
 
 namespace News_Website.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        
+        public HomeController(ApplicationDbContext context, 
+            UserManager<User> userManager, 
+            ILogger<BaseController> logger) : base(context, userManager, logger)
         {
-            _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string id)
         {
+            if (!String.IsNullOrEmpty(id))
+            {
+                id = id.ToUpper();
+                var article = db.Articles?.FirstOrDefault(x => x.UrlShortCode == id && x.Published);
+                if(article != null)
+                {
+                    return RedirectToAction("Details", "Articles", new { id = article.ArticleId });
+                }
+            }
             return View();
         }
 
