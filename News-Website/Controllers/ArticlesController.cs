@@ -28,7 +28,17 @@ namespace News_Website.Controllers
         {
             List<Article> articles;
             if(currentUser == null) { articles = await db.Articles?.Where(x => x.Published)?.ToListAsync(); }
-            else { articles = await db.Articles?.ToListAsync(); }
+            else {
+                var roles = await _userManager.GetRolesAsync(currentUser);
+                if (roles?.Count() > 0)
+                {
+                    articles = await db.Articles?.ToListAsync();
+                }
+                else
+                {
+                    articles = await db.Articles?.Where(x => x.Published)?.ToListAsync();
+                }
+            }
             return View(articles);
         }
 
@@ -37,7 +47,7 @@ namespace News_Website.Controllers
             id = id?.ToLower();
             List<Article> articles = await db.Articles?.ToListAsync(); 
             if(id == "latest") { articles = articles.OrderByDescending(x => x.PublishedOn)?.ToList(); }
-            if (currentUser == null) { articles = articles?.Where(x => x.Published)?.ToList(); }
+            if (currentUser == null || (await _userManager.GetRolesAsync(currentUser))?.Count() !> 0) { articles = articles?.Where(x => x.Published)?.ToList(); }
             articles = articles.Take(50)?.ToList();
             return View(nameof(Index), articles);
         }
@@ -154,7 +164,11 @@ namespace News_Website.Controllers
             a.Title = article.Title;
             a.DraftContent = article.DraftContent;
             a.EditedOn = DateTime.UtcNow;
-            a.Published = article.Published;
+
+            var roles = await _userManager.GetRolesAsync(currentUser);
+
+
+            a.Published = roles.Contains("SuperAdmin") || roles.Contains("Admin") ? article.Published : a.Published;
             
             if(article.ToPublish)
             {
