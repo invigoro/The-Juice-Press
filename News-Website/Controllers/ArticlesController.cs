@@ -35,6 +35,7 @@ namespace News_Website.Controllers
             List<Article> articles = await db.Articles?.ToListAsync(); 
             if(id == "latest") { articles = articles.OrderByDescending(x => x.PublishedOn)?.ToList(); }
             if (currentUser == null) { articles = articles?.Where(x => x.Published)?.ToList(); }
+            articles = articles.Take(50)?.ToList();
             return View(nameof(Index), articles);
         }
 
