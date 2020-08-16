@@ -33,7 +33,7 @@ namespace RPGMegaMart.Services
             var client = new SendGridClient(apiKey);
             var msg = new SendGridMessage()
             {
-                From = new EmailAddress("account@rpgmegamart.com", Options.SendGridUser),
+                From = new EmailAddress("account@thejuice.press", Options.SendGridUser),
                 Subject = subject,
                 PlainTextContent = message,
                 HtmlContent = message
