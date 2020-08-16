@@ -184,7 +184,7 @@ namespace News_Website.Controllers
                 }
                 if (!article.FromAjax)
                 {
-                    return RedirectToAction("Edit", new { id = a.ArticleId });
+                    return RedirectToAction("Details", new { id = a.ArticleId });
                 }
                 else
                 {
