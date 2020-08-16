@@ -174,9 +174,9 @@ h1, h2, h3, h4, .h1, .h2, .h3, .h4 {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
 
-a.navbar-brand, a.nav-link, button.nav-link {
+/*a.navbar-brand, a.nav-link, button.nav-link {
     font-weight: bold;
-}
+}*/
 
 
 .nav-tabs a.nav-link.active {
