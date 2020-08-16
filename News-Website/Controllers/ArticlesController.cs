@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using News_Website.Data;
 using News_Website.Models;
 
@@ -16,7 +17,9 @@ namespace News_Website.Controllers
     {
         //private readonly ApplicationDbContext db;
 
-        public ArticlesController(ApplicationDbContext context, UserManager<User> userManager) : base(context, userManager)
+        public ArticlesController(ApplicationDbContext context, 
+            UserManager<User> userManager, 
+            ILogger<BaseController> logger) : base(context, userManager, logger)
         {
         }
 
