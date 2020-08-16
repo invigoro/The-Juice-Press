@@ -8,36 +8,37 @@
 
 <hr />
 <div class="row">
-    <div class="col-md-12">
-        <form asp-action="Edit" class="row" id="edit-article">
-            <div class="col-12">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="ArticleId" />
-                <div class="form-group">
-                    <label asp-for="Title" class="control-label"></label>
-                    <input asp-for="Title" class="form-control" />
-                    <span asp-validation-for="Title" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <label asp-for="DraftContent" class="control-label"></label>
-                    <textarea asp-for="DraftContent" class="form-control summernote"></textarea>
-                    <span asp-validation-for="DraftContent" class="text-danger"></span>
-                </div>
-                <input type="hidden" asp-for="DraftContentEncoded" />
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
-                    </label>
-                </div>
-                <input type="hidden" asp-for="ToPublish" />
+    <div class="col-md-12" id="_edit-partial">
+        @await Html.PartialAsync("_Edit", Model)
+        @*<form asp-action="Edit" class="row" id="edit-article">
+                <div class="col-12">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="ArticleId" />
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DraftContent" class="control-label"></label>
+                        <textarea asp-for="DraftContent" class="form-control summernote"></textarea>
+                        <span asp-validation-for="DraftContent" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="DraftContentEncoded" />
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
+                        </label>
+                    </div>
+                    <input type="hidden" asp-for="ToPublish" />
 
-                <div class="form-group float-right">
-                    <input type="submit" value="Save Draft & Close" class="btn btn-primary ml-2 mr-2" />
-                    <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2">Save Draft</button>
-                    <button type="button" id="save-and-publish" class="btn btn-primary ml-2 mr-2" title="Note: this will not make it viewable.">Save & Publish</button>
+                    <div class="form-group float-right">
+                        <input type="submit" value="Save Draft & Close" class="btn btn-primary ml-2 mr-2" />
+                        <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2">Save Draft</button>
+                        <button type="button" id="save-and-publish" class="btn btn-primary ml-2 mr-2" title="Note: this will not make it viewable.">Save & Publish</button>
+                    </div>
                 </div>
-            </div>
-        </form>
+            </form>*@
     </div>
 </div>
 
@@ -50,9 +51,15 @@
     <script type="text/javascript" src="~/js/defaultSummernote.js"></script>
     <script>
         $(function () {
+            $("body").on("click", "form#edit-article input[type=submit]", function (e) {
+                e.preventDefault();
+                $("input#FromAjax").val("false");
+                $("form#edit-article").submit();
+            });
             $("body").on("click", "#save-draft", function (e) {
                 e.preventDefault();
                 $("input#ToPublish").val("false");
+                $("input#FromAjax").val("true");
                 var form = $("form#edit-article");
                 if (form.valid()) {
                     var action = form.attr("action");
@@ -61,14 +68,30 @@
                         method: "POST",
                         url: action,
                         data: form,
-                    }).done(function () {
-                        var save = $("#save-draft");
-                        save.toggleClass("btn-primary btn-secondary");
-                        save.html("<i class='fas fa-check'></i> Draft Saved!");
-                        setTimeout(function () {
-                            save.toggleClass("btn-primary btn-secondary");
-                            save.html("Save Draft");
-                        }, 4000);
+                    }).done(function (data) {
+                        var newUrl = "/Articles/_Edit/" + data.id;
+
+                        $.ajax({
+                            method: "GET",
+                            url: newUrl,
+                        })
+                            .done(function (data) {
+                                $("#_edit-partial").html(data);
+                                defaultSummerNote();
+                                var save = $("#save-draft");
+                                save.toggleClass("btn-primary btn-secondary");
+                                save.html("<i class='fas fa-check'></i> Draft Saved!");
+                                setTimeout(function () {
+                                    save.toggleClass("btn-primary btn-secondary");
+                                    save.html("Save Draft");
+                                }, 4000);
+                            })
+                        //$("#_edit-partial").load({
+                        //    url: newUrl, complete: function (e) {
+
+                        //    }
+                        //});
+
                     });
 
                 }
@@ -77,6 +100,7 @@
             $("body").on("click", "#save-and-publish", function (e) {
                 e.preventDefault();
                 $("input#ToPublish").val("true");
+                $("input#FromAjax").val("true");
                 var form = $("form#edit-article");
                 if (form.valid()) {
                     var action = form.attr("action");
@@ -85,14 +109,24 @@
                         method: "POST",
                         url: action,
                         data: form,
-                    }).done(function () {
-                        var save = $("#save-and-publish");
-                        save.toggleClass("btn-primary btn-secondary");
-                        save.html("<i class='fas fa-check'></i> Saved and Published!");
-                        setTimeout(function () {
-                            save.toggleClass("btn-primary btn-secondary");
-                            save.html("Save & Publish");
-                        }, 4000);
+                    }).done(function (data) {
+                        var newUrl = "/Articles/_Edit/" + data.id;
+
+                        $.ajax({
+                            method: "GET",
+                            url: newUrl,
+                        })
+                            .done(function (data) {
+                                $("#_edit-partial").html(data);
+                                defaultSummerNote();
+                                var save = $("#save-and-publish");
+                                save.toggleClass("btn-primary btn-secondary");
+                                save.html("<i class='fas fa-check'></i> Saved and Published!");
+                                setTimeout(function () {
+                                    save.toggleClass("btn-primary btn-secondary");
+                                    save.html("Save & Publish");
+                                }, 4000);
+                            });
                     });
 
                 }
