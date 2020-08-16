@@ -38,6 +38,7 @@ namespace News_Website.Models
             return acceptedActions.Contains(currentAction) && acceptedControllers.Contains(currentController) ?
                 cssClass : String.Empty;
         }
+
         public static string FormattedDaysAgo(DateTime d)
         {
             const int SECOND = 1;
