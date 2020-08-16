@@ -100,6 +100,18 @@ namespace News_Website.Controllers
             
             return View(article);
         }
+        [Authorize]
+        public async Task<IActionResult> _Edit(int? id)
+        {
+
+            var article = await db.Articles.FindAsync(id);
+            if (article == null)
+            {
+                return View(new Article());
+            }
+
+            return View(article);
+        }
 
         // POST: Articles/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -107,15 +119,23 @@ namespace News_Website.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,ToPublish")] Article article)
+        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,ToPublish,FromAjax")] Article article)
         {
 
-            var a = await db.Articles.FindAsync(id);
+            var a = await db.Articles.FindAsync(article.ArticleId);
             if(a == null)
             {
+                string shortCode = "";
+                do
+                {
+                    var generatedShortCode = Helpers.RandomString(10);
+                    if (db.Articles.FirstOrDefault(x => x.UrlShortCode == generatedShortCode) == null) shortCode = generatedShortCode;
+                } while (String.IsNullOrEmpty(shortCode)); //make sure the shortcode is not a dupe
+
                 a = new Article()
                 {
                     CreatedOn = DateTime.UtcNow,
+                    UrlShortCode = shortCode,
                     ArticleAuthors = new List<ArticleAuthor>
                     {
                         new ArticleAuthor
@@ -159,7 +179,14 @@ namespace News_Website.Controllers
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                if (!article.FromAjax)
+                {
+                    return RedirectToAction("Edit", new { id = a.ArticleId });
+                }
+                else
+                {
+                    return Ok(new { id = a.ArticleId });
+                }
             }
             return View(article);
         }
