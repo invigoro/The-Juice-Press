@@ -12,7 +12,19 @@
     </div>
     }
 </div>
-<div class="h6 text-dark">@Helpers.FormattedDaysAgo(Model.PublishedOn.Value)</div>
-<div class="">
-    @Html.Raw(Model.Content)
+<div class="row">
+    <div class="col-auto">
+        <div class="h6 text-dark">@Helpers.FormattedDaysAgo(Model.PublishedOn.Value)</div>
+    </div>
+    <div class="col">
+        <div class="h6 text-dark">By @Model.PrimaryAuthor?.DisplayName</div>
+    </div>
+    <div class="col-auto">
+        <partial name="/Views/Shared/_ShareButtons.cshtml" />
+    </div>
+</div>
+<div class="row mt-3 border-top pt-3">
+    <div class="col">
+        @Html.Raw(Model.Content)
+    </div>
 </div>
