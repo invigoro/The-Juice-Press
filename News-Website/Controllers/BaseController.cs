@@ -13,7 +13,7 @@ namespace News_Website.Controllers
     public abstract class BaseController : Controller
     {
         protected readonly ApplicationDbContext db;
-        private readonly UserManager<User> _userManager;
+        protected readonly UserManager<User> _userManager;
         protected readonly ILogger<BaseController> _logger;
 
         protected User currentUser
