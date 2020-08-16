@@ -10,8 +10,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace News_Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200815025120_8-14-01")]
-    partial class _81401
+    [Migration("20200816194148_8-16_03")]
+    partial class _816_03
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -158,6 +158,9 @@ namespace News_Website.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
+                    b.Property<int?>("Category")
+                        .HasColumnType("integer");
+
                     b.Property<string>("Content")
                         .HasColumnType("text");
 
@@ -177,13 +180,20 @@ namespace News_Website.Migrations
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Title")
-                        .HasColumnType("character varying(55)")
-                        .HasMaxLength(55);
+                        .HasColumnType("character varying(1000)")
+                        .HasMaxLength(1000);
 
                     b.Property<int>("TotalViews")
                         .HasColumnType("integer");
 
+                    b.Property<string>("UrlShortCode")
+                        .IsRequired()
+                        .HasColumnType("character varying(10)")
+                        .HasMaxLength(10);
+
                     b.HasKey("ArticleId");
+
+                    b.HasAlternateKey("UrlShortCode");
 
                     b.ToTable("Articles");
                 });
@@ -259,6 +269,9 @@ namespace News_Website.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<string>("ProfilePicture")
+                        .HasColumnType("text");
 
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("text");

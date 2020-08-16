@@ -31,10 +31,21 @@ namespace News_Website.Controllers
                     return RedirectToAction("Details", "Articles", new { id = article.ArticleId });
                 }
             }
-            return View();
+            var articles = db.Articles?.Where(x => x.Published && x.PublishedOn != null)?
+                .OrderByDescending(x => x.PublishedOn)?
+                .Take(10)
+                .OrderByDescending(x => x.TotalViews)?
+                .ToList();
+
+            return View(articles);
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult Disclaimer()
         {
             return View();
         }

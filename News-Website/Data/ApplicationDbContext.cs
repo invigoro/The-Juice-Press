@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using News_Website.Models;
@@ -28,6 +29,12 @@ namespace News_Website.Data
                 .HasForeignKey(x => x.UserId);
             builder.Entity<Article>()
                 .HasAlternateKey(x => x.UrlShortCode);
+            //builder.Entity<IdentityRole>().HasData(
+            //    new IdentityRole("Admin"),
+            //    new IdentityRole("SuperAdmin"),
+            //    new IdentityRole("User"),
+            //    new IdentityRole("Author")
+            // );
         }
     }
 }
