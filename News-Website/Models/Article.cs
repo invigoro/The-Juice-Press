@@ -19,6 +19,7 @@ namespace News_Website.Models
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime EditedOn { get; set; } = DateTime.UtcNow;
         public DateTime? PublishedOn { get; set; } = DateTime.UtcNow;
+        [Display(Name="Publicly Viewable")]
         public bool Published { get; set; } = false;
         [NotMapped]
         public User PrimaryAuthor
@@ -31,7 +32,7 @@ namespace News_Website.Models
         [NotMapped]
         public bool ToPublish { get; set; }
         public virtual List<ArticleAuthor> ArticleAuthors { get; set; }
-        public int TotalViews { get; set; }
+        public int TotalViews { get; set; } = 0;
         [NotMapped]
         public string DraftContentEncoded { get; set; }
     }
