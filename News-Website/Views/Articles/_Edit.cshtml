@@ -19,11 +19,15 @@
                     <span asp-validation-for="DraftContent" class="text-danger"></span>
                 </div>
                 <input type="hidden" asp-for="DraftContentEncoded" />
-                <div class="form-group form-check">
-                    <label class="form-check-label">
-                        <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
-                    </label>
-                </div>
+
+                @if (User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
+                {
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
+                        </label>
+                    </div>
+                }
                 <input type="hidden" asp-for="ToPublish" />
                 <input type="hidden" asp-for="FromAjax" />
 
