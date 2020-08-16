@@ -4,6 +4,9 @@ for details on configuring this project to bundle and minify static web assets. 
 @import url('https://fonts.googleapis.com/css2?family=Gotu&family=Roboto&display=swap');
 /*ROOT COLORS AND FONTS*/
 :root {
+    --blue-darker: #242582;
+    --blue-darker: #2F2FA2;
+    --pink: #F64C62;
     --purple-darker: #1a0033;
     --purple-dark: #28004d;
     --purple: #420080;
@@ -144,7 +147,7 @@ body {
     margin-right: .5rem;
 }
 
-.btn-primary {
+/*.btn-primary {
     background-color: var(--orange) !important;
     border-color: var(--orange) !important;
     color: white !important;
@@ -154,7 +157,7 @@ body {
     background-color: var(--purple) !important;
     border-color: var(--purple) !important;
     color: white !important;
-}
+}*/
 
 .bg-dark {
     background-color: var(--purple-darker) !important;
