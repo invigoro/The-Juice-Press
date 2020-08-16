@@ -9,9 +9,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using News_Website.Data;
 using News_Website.Models;
+using News_Website.Models.Admin;
 
 namespace News_Website.Controllers
 {
+    [Authorize(Roles = "Admin, SuperAdmin")]
     public class AdminController : BaseController
     {
         private RoleManager<IdentityRole> _roleManager { get; set; }
@@ -21,27 +23,52 @@ namespace News_Website.Controllers
         {
             _roleManager = roleManager;
         }
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
-            return View();
+            var users = db.Users?.ToList();
+            return View(users);
         }
-
-        [Authorize]
-        public async Task<IActionResult> SeedSuperAdmin()
+        [Authorize(Roles="SuperAdmin")]
+        public async Task<IActionResult> EditRoles(string id)
         {
-            var roles = db.Roles?.ToList();
-            
-            foreach (var r in roles)
+            var user = db.Users?.Find(id);
+            if (user == null) return NotFound();
+            var roles = await _userManager.GetRolesAsync(user);
+            var u = new SetUserRolesViewModel
             {
-                var userrole = db.UserRoles.FirstOrDefault(x => x.RoleId == r.Id && x.UserId == currentUserId);
-                if (userrole == null)
-                {
-                    var toAdd = new IdentityUserRole<string> { UserId = currentUserId, RoleId = r.Id };
-                    db.UserRoles.Add(toAdd);
-                }
-            }
-            await db.SaveChangesAsync();
+                User = user,
+                UserId = id,
+                Viewer = roles.Contains("Viewer"),
+                Editor = roles.Contains("Editor"),
+                Admin = roles.Contains("Admin"),
+                SuperAdmin = roles.Contains("SuperAdmin"),
+
+            };
+            return View(u);
+        }
+        [HttpPost]
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> EditRoles(string id, [Bind("UserId, Viewer, Editor, Admin, SuperAdmin")]SetUserRolesViewModel roles)
+        {
+            var user = db.Users?.Find(id);
+            if (user == null) return NotFound();
+
+            List<string> newRoles = new List<string>();
+            if (roles.Viewer) newRoles.Add("Viewer");
+            if (roles.Editor) newRoles.Add("Editor");
+            if (roles.Admin) newRoles.Add("Admin");
+            if (roles.SuperAdmin) newRoles.Add("SuperAdmin");
+
+
+            var currentRoles = await _userManager.GetRolesAsync(user);
+
+            var toRemove = currentRoles.Where(x => !newRoles.Contains(x));
+            var toAdd = newRoles.Where(x => !currentRoles.Contains(x));
+
+            await _userManager.RemoveFromRolesAsync(user, toRemove);
+            await _userManager.AddToRolesAsync(user, toAdd);
+
             return RedirectToAction(nameof(Index));
         }
     }
