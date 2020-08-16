@@ -23,7 +23,19 @@ namespace News_Website.Controllers
         // GET: Articles
         public async Task<IActionResult> Index(string id)
         {
-            return View(await db.Articles.ToListAsync());
+            List<Article> articles;
+            if(currentUser == null) { articles = await db.Articles?.Where(x => x.Published)?.ToListAsync(); }
+            else { articles = await db.Articles?.ToListAsync(); }
+            return View(articles);
+        }
+
+        public async Task<IActionResult> List(string id)
+        {
+            id = id?.ToLower();
+            List<Article> articles = await db.Articles?.ToListAsync(); 
+            if(id == "latest") { articles = articles.OrderByDescending(x => x.PublishedOn)?.ToList(); }
+            if (currentUser == null) { articles = articles?.Where(x => x.Published)?.ToList(); }
+            return View(nameof(Index), articles);
         }
 
         // GET: Articles/Details/5
@@ -84,6 +96,7 @@ namespace News_Website.Controllers
             {
                 return View(new Article());
             }
+            
             return View(article);
         }
 
@@ -93,24 +106,45 @@ namespace News_Website.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published")] Article article)
+        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,ToPublish")] Article article)
         {
-            if (id != article.ArticleId || id == 0) //creating a new article
+
+            var a = await db.Articles.FindAsync(id);
+            if(a == null)
             {
-                if (ModelState.IsValid)
+                a = new Article()
                 {
-                    db.Add(article);
-                    await db.SaveChangesAsync();
-                    return RedirectToAction(nameof(Index));
-                }
-                return View(article);
+                    CreatedOn = DateTime.UtcNow,
+                    ArticleAuthors = new List<ArticleAuthor>
+                    {
+                        new ArticleAuthor
+                        {
+                            User = currentUser,
+                            Article = article,
+                            IsPrimaryAuthor = true
+                        }
+                    }
+                };
+                db.Articles.Add(a);
+            }
+            a.Title = article.Title;
+            a.DraftContent = article.DraftContent;
+            a.EditedOn = DateTime.UtcNow;
+            a.Published = article.Published;
+            
+            if(article.ToPublish)
+            {
+                a.PublishedOn = DateTime.UtcNow;
+                a.Content = article.DraftContent;
             }
 
             if (ModelState.IsValid)
             {
+
+
                 try
                 {
-                    db.Update(article);
+                    //db.Update(article);
                     await db.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)

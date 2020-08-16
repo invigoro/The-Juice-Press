@@ -1,71 +1,206 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+@import url('https://fonts.googleapis.com/css2?family=Gotu&family=Roboto&display=swap');
+/*ROOT COLORS AND FONTS*/
+:root {
+    --purple-darker: #1a0033;
+    --purple-dark: #28004d;
+    --purple: #420080;
+    --orange: #ff8c1a;
+    --orange-light: #ffbf80;
+    --orange-lightest: #fff2e6;
+    --orange-trans: rgba(255, 140, 26, 0.5);
+    --orange-light-trans: rgba(255, 191, 128, 0.5);
+    --orange-lightest-trans: rgba(255, 242, 230, 0.3);
+    --default-font: "Roboto", sans-serif;
 }
 
+.html, body {
+    font-family: var(--default-font);
+}
+
+a.article-link {
+    color: black;
+}
+a.article-link:hover {
+    color: slategray;
+    text-decoration: none;
+}
+
+a.navbar-brand {
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
+}
+
+.bg-light-orange {
+    background-color: var(--orange-light-trans);
+}
+
+#navbar-logo:hover {
+    content: url("../img/logo-white-simple.png");
+}
+
+#navbar-logo {
+    content: url("../img/logo-light-simple.png");
+}
 /* Provide sufficient contrast against white background */
 a {
-  color: #0366d6;
+    color: #0366d6;
 }
 
-.btn-primary {
+/*.btn-primary {
   color: #fff;
   background-color: #1b6ec2;
   border-color: #1861ac;
-}
+}*/
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
+
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 /* Sticky footer styles
 -------------------------------------------------- */
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
+
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px; /* Vertically center the text there */
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px; /* Vertically center the text there */
+}
+
+
+/* Image Styling 
+    ------------------------------------------------*/
+.profile-img {
+    max-width: 40px;
+    max-height: 40px;
+}
+
+.profile-img-sm {
+    max-width: 30px;
+    max-height: 30px;
+}
+
+.profile-img-lg {
+    max-width: 50px;
+    max-height: 50px;
+}
+
+.profile-img-xxl {
+    max-width: 256px;
+    max-height: 256px;
+}
+
+.profile-border {
+    border: 2px groove gray;
+}
+
+/*BOOTSTRAP OVERRIDES*/
+.custom-checkbox, .custom-radio {
+    transform: scale(1.5);
+    margin-right: .5rem;
+}
+
+.btn-primary {
+    background-color: var(--orange) !important;
+    border-color: var(--orange) !important;
+    color: white !important;
+}
+
+.btn-secondary {
+    background-color: var(--purple) !important;
+    border-color: var(--purple) !important;
+    color: white !important;
+}
+
+.bg-dark {
+    background-color: var(--purple-darker) !important;
+    color: white !important;
+}
+
+    .bg-dark a:not(.dropdown-item), .bg-dark .nav-link, .navbar-toggler {
+        color: lightgray !important;
+    }
+
+        .bg-dark a:hover:not(.dropdown-item), .bg-dark .nav-link:hover {
+            color: white !important;
+        }
+
+a.navbar-brand, 
+h1, h2, h3, h4, .h1, .h2, .h3, .h4 {
+    font-family: Georgia, 'Times New Roman', Times, serif;
+}
+
+a.navbar-brand, a.nav-link, button.nav-link {
+    font-weight: bold;
+}
+
+
+.nav-tabs a.nav-link.active {
+    color: var(--purple) !important;
+    font-weight: bolder !important;
+    border: 3px solid;
+    border-color: lightgray lightgray transparent;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+}
+
+.nav-tabs a.nav-link:not(.active) {
+    color: var(--purple-dark) !important;
+    /*border: 3px solid;
+    border-color: transparent transparent lightgray;
+    border-radius: 0px;*/
+    border-top: 3px solid transparent;
+    border-bottom: 3px solid lightgray;
+    border-right: 0px;
+    border-left: 0px;
+}
+
+.nav-tabs a.nav-link {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    height: 100%;
 }
