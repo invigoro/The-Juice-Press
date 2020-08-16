@@ -6,7 +6,7 @@
 
 <h1>Lastest News</h1>
 
-@if (User?.Identity != null)
+@if (User?.IsInRole("Editor") == true || User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin")== true )
 {
 <p>
     <a asp-action="Edit">Create New</a>
