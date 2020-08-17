@@ -17,6 +17,7 @@ namespace News_Website.Data
 
         public DbSet<Article> Articles { get; set; }
         public DbSet<ArticleAuthor> ArticleAuthors { get; set; }
+        public DbSet<BlobFile> BlobFiles { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
