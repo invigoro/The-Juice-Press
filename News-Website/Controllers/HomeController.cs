@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using News_Website.Data;
 using News_Website.Models;
+using News_Website.Services;
 
 namespace News_Website.Controllers
 {
@@ -16,7 +17,8 @@ namespace News_Website.Controllers
         
         public HomeController(ApplicationDbContext context, 
             UserManager<User> userManager, 
-            ILogger<BaseController> logger) : base(context, userManager, logger)
+            ILogger<BaseController> logger,
+            ICloudStorage cloudStorage) : base(context, userManager, logger, cloudStorage)
         {
         }
 
