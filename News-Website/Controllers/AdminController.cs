@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using News_Website.Data;
 using News_Website.Models;
 using News_Website.Models.Admin;
+using News_Website.Services;
 
 namespace News_Website.Controllers
 {
@@ -19,7 +20,7 @@ namespace News_Website.Controllers
         private RoleManager<IdentityRole> _roleManager { get; set; }
         public AdminController(ApplicationDbContext context,
             UserManager<User> userManager,
-            ILogger<BaseController> logger, RoleManager<IdentityRole> roleManager ) : base(context, userManager, logger)
+            ILogger<BaseController> logger, RoleManager<IdentityRole> roleManager, ICloudStorage cloudStorage) : base(context, userManager, logger, cloudStorage)
         {
             _roleManager = roleManager;
         }
