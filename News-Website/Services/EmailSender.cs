@@ -6,7 +6,7 @@ using SendGrid.Helpers.Mail;
 using System;
 using System.Threading.Tasks;
 
-namespace RPGMegaMart.Services
+namespace News_Website.Services
 {
     public class EmailSender : IEmailSender
     {
