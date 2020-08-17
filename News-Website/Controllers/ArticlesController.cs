@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -10,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using News_Website.Data;
 using News_Website.Models;
+using News_Website.Services;
 
 namespace News_Website.Controllers
 {
@@ -19,7 +21,7 @@ namespace News_Website.Controllers
 
         public ArticlesController(ApplicationDbContext context, 
             UserManager<User> userManager, 
-            ILogger<BaseController> logger) : base(context, userManager, logger)
+            ILogger<BaseController> logger, ICloudStorage cloudStorage) : base(context, userManager, logger, cloudStorage)
         {
         }
 
@@ -132,7 +134,7 @@ namespace News_Website.Controllers
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,ToPublish,FromAjax")] Article article)
+        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,ToPublish,FromAjax")] Article article)
         {
 
             var a = await db.Articles.FindAsync(article.ArticleId);
@@ -164,6 +166,26 @@ namespace News_Website.Controllers
             a.Title = article.Title;
             a.DraftContent = article.DraftContent;
             a.EditedOn = DateTime.UtcNow;
+
+            if(article.CoverImageUpload != null)
+            {
+                a.CoverImageUpload = article.CoverImageUpload;
+                if(a.CoverImage != null)
+                {
+                    try
+                    {
+                        await _cloudStorage.DeleteFileAsync(a.CoverImage.StorageName);
+                    }
+                    catch(Exception e)
+                    {
+
+                    }
+                    var toRemove = a.CoverImage;
+                    a.CoverImage = null;
+                    db.BlobFiles.Remove(toRemove);
+                }
+                await UploadFile(a);
+            }
 
             var roles = await _userManager.GetRolesAsync(currentUser);
 
@@ -242,6 +264,20 @@ namespace News_Website.Controllers
         private bool ArticleExists(int id)
         {
             return db.Articles.Any(e => e.ArticleId == id);
+        }
+
+        private async Task UploadFile(Article article)
+        {
+            string fileNameForStorage = FormFileName(article.Title, article.CoverImageUpload.FileName);
+            article.CoverImage = await _cloudStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
+            await db.SaveChangesAsync();
+        }
+
+        private static string FormFileName(string title, string fileName)
+        {
+            var fileExtension = Path.GetExtension(fileName);
+            var fileNameForStorage = $"{title.Replace(" ", "-")}-{DateTime.Now.ToString("yyyyMMddHHmmss")}{fileExtension}";
+            return fileNameForStorage;
         }
     }
 }
