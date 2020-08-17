@@ -23,6 +23,13 @@
         <partial name="/Views/Shared/_ShareButtons.cshtml" />
     </div>
 </div>
+@if (Model.CoverImage != null) {
+<div class="row mt-3">
+    <div class="col d-flex flex-column align-content-center">
+        <img src="@Model.CoverImage.Url" class="img-fluid d-inline-block m-auto" />
+    </div>
+</div>
+}
 <div class="row mt-3 border-top pt-3">
     <div class="col">
         @Html.Raw(Model.Content)

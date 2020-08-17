@@ -4,7 +4,7 @@
     Layout = null;
 }
 
-        <form asp-action="Edit" class="row" id="edit-article">
+        <form asp-action="Edit" class="row" id="edit-article" enctype="multipart/form-data">
             <div class="col-12">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="ArticleId" />
@@ -12,6 +12,11 @@
                     <label asp-for="Title" class="control-label"></label>
                     <input asp-for="Title" class="form-control" />
                     <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="CoverImageUpload" class="control-label"></label>
+                    <input asp-for="CoverImageUpload" type="file" class="form-control" />
+                    <span asp-validation-for="CoverImageUpload" class="text-danger"></span>
                 </div>
                 <div class="form-group">
                     <label asp-for="DraftContent" class="control-label"></label>

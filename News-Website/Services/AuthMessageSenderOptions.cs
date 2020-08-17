@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using SendGrid.Helpers.Mail;
 using Microsoft.Extensions.Configuration;
 
-namespace RPGMegaMart.Services
+namespace News_Website.Services
 {
     public class AuthMessageSenderOptions
     {
