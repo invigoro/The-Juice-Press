@@ -15,8 +15,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using News_Website.Models;
 using Npgsql;
-using RPGMegaMart.Services;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using News_Website.Services;
 
 namespace News_Website
 {
@@ -63,6 +63,7 @@ namespace News_Website
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddTransient<IEmailSender, EmailSender>();
+            services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.ConfigureApplicationCookie(o => {
                 o.ExpireTimeSpan = TimeSpan.FromDays(5);

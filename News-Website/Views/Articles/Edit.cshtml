@@ -50,6 +50,7 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript" src="~/js/defaultSummernote.js"></script>
     <script>
+
         $(function () {
             $("body").on("click", "form#edit-article input[type=submit]", function (e) {
                 e.preventDefault();
@@ -63,11 +64,15 @@
                 var form = $("form#edit-article");
                 if (form.valid()) {
                     var action = form.attr("action");
-                    form = form.serialize();
+                    //form = form.serialize();
+                    form = new FormData(document.getElementById("edit-article"));
                     $.ajax({
                         method: "POST",
                         url: action,
                         data: form,
+                        dataType: "JSON",
+                        processData: false,
+                        contentType: false,
                     }).done(function (data) {
                         var newUrl = "/Articles/_Edit/" + data.id;
 
@@ -104,11 +109,15 @@
                 var form = $("form#edit-article");
                 if (form.valid()) {
                     var action = form.attr("action");
-                    form = form.serialize();
+                    //form = form.serialize();
+                    form = new FormData(document.getElementById("edit-article"));
                     $.ajax({
                         method: "POST",
                         url: action,
                         data: form,
+                        dataType: "JSON",
+                        processData: false,
+                        contentType: false,
                     }).done(function (data) {
                         var newUrl = "/Articles/_Edit/" + data.id;
 
