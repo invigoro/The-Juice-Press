@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -39,6 +40,10 @@ namespace News_Website.Models
         [NotMapped]
         public string DraftContentEncoded { get; set; }
         public ArticleCategory? Category { get; set; }
+        [Display(Name="Cover Photo")]
+        public virtual BlobFile CoverImage { get; set; }
+        [NotMapped]
+        public virtual IFormFile CoverImageUpload { get; set; }
     }
 
     public enum ArticleCategory
