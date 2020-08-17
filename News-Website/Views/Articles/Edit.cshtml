@@ -50,18 +50,25 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     <script type="text/javascript" src="~/js/defaultSummernote.js"></script>
     <script>
-
+        const formName = "form#edit-article";
         $(function () {
-            $("body").on("click", "form#edit-article input[type=submit]", function (e) {
+            $("body").on("click", "#save-draft-and-close", function (e) {
                 e.preventDefault();
+                $("input#ToPublish").val("false");
                 $("input#FromAjax").val("false");
-                $("form#edit-article").submit();
+                $(formName).submit();
+            });
+            $("body").on("click", "#save-publish-and-close", function (e) {
+                e.preventDefault();
+                $("input#ToPublish").val("true");
+                $("input#FromAjax").val("false");
+                $(formName).submit();
             });
             $("body").on("click", "#save-draft", function (e) {
                 e.preventDefault();
                 $("input#ToPublish").val("false");
                 $("input#FromAjax").val("true");
-                var form = $("form#edit-article");
+                var form = $(formName);
                 if (form.valid()) {
                     var action = form.attr("action");
                     //form = form.serialize();
@@ -106,7 +113,7 @@
                 e.preventDefault();
                 $("input#ToPublish").val("true");
                 $("input#FromAjax").val("true");
-                var form = $("form#edit-article");
+                var form = $(formName);
                 if (form.valid()) {
                     var action = form.attr("action");
                     //form = form.serialize();
@@ -129,10 +136,10 @@
                                 $("#_edit-partial").html(data);
                                 defaultSummerNote();
                                 var save = $("#save-and-publish");
-                                save.toggleClass("btn-primary btn-secondary");
+                                save.toggleClass("btn-warning btn-secondary");
                                 save.html("<i class='fas fa-check'></i> Saved and Published!");
                                 setTimeout(function () {
-                                    save.toggleClass("btn-primary btn-secondary");
+                                    save.toggleClass("btn-warning btn-secondary");
                                     save.html("Save & Publish");
                                 }, 4000);
                             });
