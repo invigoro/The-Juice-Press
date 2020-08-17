@@ -43,6 +43,7 @@ namespace News_Website.Models
         [Display(Name="Cover Photo")]
         public virtual BlobFile CoverImage { get; set; }
         [NotMapped]
+        [Display(Name = "Upload New Cover Image")]
         public virtual IFormFile CoverImageUpload { get; set; }
     }
 
