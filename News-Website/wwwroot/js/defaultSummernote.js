@@ -5,8 +5,9 @@
         height: 500,
         toolbar: [
             ['style', ['style']],
-            ['font', ['bold', 'italic', 'underline', 'color', 'clear', 'strikethrough', 'superscript', 'subscript']],
-            ['fontsize', ['fontsize']],
+            ['fontoptions', ['fontname', 'fontsize']],
+            ['font', ['bold', 'italic', 'underline']]
+            ['fontstyle', ['color', 'clear', 'strikethrough', 'superscript', 'subscript']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['height', ['height']],
             ['insert', ['link', 'table']],
