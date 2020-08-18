@@ -4,12 +4,14 @@
     $(".summernote").summernote({
         height: 500,
         toolbar: [
-            ['style', ['bold', 'italic', 'underline', 'clear']],
-            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['style', ['style']],
+            ['font', ['bold', 'italic', 'underline', 'color', 'clear', 'strikethrough', 'superscript', 'subscript']],
             ['fontsize', ['fontsize']],
-            ['color', ['color']],
             ['para', ['ul', 'ol', 'paragraph']],
-            ['height', ['height']]
+            ['height', ['height']],
+            ['insert', ['link', 'table']],
+            ['view', ['fullscreen', 'codeview', 'help']],
+            ['options', ['undo', 'redo']]
         ],
         callbacks: {
             onChange: function (contents, $editable) {

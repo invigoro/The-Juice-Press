@@ -49,7 +49,7 @@ namespace News_Website.Controllers
             id = id?.ToLower();
             List<Article> articles = await db.Articles?.ToListAsync(); 
             if(id == "latest") { articles = articles.OrderByDescending(x => x.PublishedOn)?.ToList(); }
-            if (currentUser == null || (await _userManager.GetRolesAsync(currentUser))?.Count() !> 0) { articles = articles?.Where(x => x.Published)?.ToList(); }
+            if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count()  > 0)) { articles = articles?.Where(x => x.Published)?.ToList(); }
             articles = articles.Take(50)?.ToList();
             return View(nameof(Index), articles);
         }
