@@ -18,6 +18,7 @@ using Npgsql;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using News_Website.Services;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace News_Website
 {
@@ -98,6 +99,16 @@ namespace News_Website
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            var forwardedHeadersOptions = new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+                RequireHeaderSymmetry = false
+            };
+            forwardedHeadersOptions.KnownNetworks.Clear();
+            forwardedHeadersOptions.KnownProxies.Clear();
+
+            app.UseForwardedHeaders(forwardedHeadersOptions);
 
             app.UseEndpoints(endpoints =>
             {
