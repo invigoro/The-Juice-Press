@@ -57,5 +57,10 @@ namespace News_Website.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public IActionResult Register() { return LocalRedirect("/Identity/Account/Register"); }
+        public IActionResult SignUp() { return LocalRedirect("/Identity/Account/Register"); }
+        public IActionResult LogIn() { return LocalRedirect("/Identity/Account/Login"); }
+        public IActionResult SignIn() { return LocalRedirect("/Identity/Account/Login"); }
     }
 }
