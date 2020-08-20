@@ -2,16 +2,25 @@
 @inject SignInManager<User> SignInManager
 @inject UserManager<User> UserManager
 
+@{ 
+    var currentUser = await UserManager.FindByIdAsync(UserManager.GetUserId(User));
+}
+
 <ul class="navbar-nav">
 @if (SignInManager.IsSignedIn(User))
 {
     <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
-    </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
+        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">
+            @if (currentUser.ProfileImage != null)
+            {
+                <img src="@currentUser.ProfileImage.Url" class="rounded d-inline" style="max-width: 30px; max-height: 30px" />
+            }
+            else
+            {
+                <img src="~/img/default-profile.jpg" class="rounded d-inline" style="max-width: 30px; max-height: 30px" />
+            }
+            @*<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!*@
+        </a>
     </li>
 }
 else
