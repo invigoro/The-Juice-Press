@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -134,7 +135,7 @@ namespace News_Website.Controllers
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,ToPublish,FromAjax")] Article article)
+        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,ToPublish,FromAjax")] Article article)
         {
 
             var a = await db.Articles.FindAsync(article.ArticleId);
@@ -166,6 +167,7 @@ namespace News_Website.Controllers
             a.Title = article.Title;
             a.DraftContent = article.DraftContent;
             a.EditedOn = DateTime.UtcNow;
+            a.Category = article.Category == null ? (ArticleCategory?)null : article.Category;
 
             if(article.CoverImageUpload != null)
             {
@@ -187,10 +189,10 @@ namespace News_Website.Controllers
                 await UploadFile(a);
             }
 
-            var roles = await _userManager.GetRolesAsync(currentUser);
+            //var roles = await _userManager.GetRolesAsync(currentUser);
 
 
-            a.Published = roles.Contains("SuperAdmin") || roles.Contains("Admin") ? article.Published : a.Published;
+            a.Published = await _userManager.IsInAnyRoleAsync(currentUser, "SuperAdmin,Admin")/*roles.Contains("SuperAdmin") || roles.Contains("Admin") */? article.Published : a.Published;
             
             if(article.ToPublish)
             {
@@ -228,6 +230,13 @@ namespace News_Website.Controllers
                 }
             }
             return View(article);
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        public async Task<JsonResult> UploadFiles(int? id, List<IFormFile> files)
+        {
+            return new JsonResult(new { result = "success" });
         }
 
         // GET: Articles/Delete/5
