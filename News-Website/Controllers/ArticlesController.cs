@@ -48,8 +48,10 @@ namespace News_Website.Controllers
         public async Task<IActionResult> List(string id)
         {
             id = id?.ToLower();
-            List<Article> articles = await db.Articles?.ToListAsync(); 
+            List<Article> articles = await db.Articles?.ToListAsync();
+            var categories = EnumHelper<ArticleCategory>.GetDisplayValues(ArticleCategory.Entertainment)?.Select(x => x.ToLower());
             if(id == "latest") { articles = articles.OrderByDescending(x => x.PublishedOn)?.ToList(); }
+            else if (categories.Contains(id)) { articles = articles.Where(x => x.Category != null)?.ToList()?.Where(x => EnumHelper<ArticleCategory>.GetDisplayValue((ArticleCategory)x.Category).ToLower() == id)?.ToList(); }
             if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count()  > 0)) { articles = articles?.Where(x => x.Published)?.ToList(); }
             articles = articles.Take(50)?.ToList();
             return View(nameof(Index), articles);
