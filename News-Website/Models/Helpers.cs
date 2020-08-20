@@ -43,6 +43,15 @@ namespace News_Website.Models
                 cssClass : String.Empty;
         }
 
+        public static bool ContainsAll(this string s, string[] contains)
+        {
+            foreach (var c in contains ?? new string[0])
+            {
+                if (!s.Contains(c)) return false;
+            }
+            return true;
+        }
+
         public static string FormattedDaysAgo(DateTime d)
         {
             const int SECOND = 1;
