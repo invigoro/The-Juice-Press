@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace News_Website.Models
@@ -81,6 +83,83 @@ namespace News_Website.Models
                 int years = Convert.ToInt32(Math.Floor((double)ts.Days / 365));
                 return years <= 1 ? "one year ago" : years + " years ago";
             }
+        }
+
+        public static async Task<bool> IsInRoleAsync(this UserManager<User> manager, User user, string role)
+        {
+            var roles = await manager.GetRolesAsync(user);
+            return roles.Contains(role);
+        }
+        public static bool IsInRole(this UserManager<User> manager, User user, string role)
+        {
+            var roles = manager.GetRolesAsync(user).Result;
+            return roles.Contains(role);
+        }
+        public static async Task<bool> IsInAnyRoleAsync(this UserManager<User> manager, User user, string roles)
+        {
+            var rolesSplit = roles.Split(",");
+            foreach(var r in rolesSplit)
+            {
+                if (await manager.IsInRoleAsync(user, r)) return true;
+            }
+            return false;
+        }
+        public static bool IsInAnyRole(this UserManager<User> manager, User user, string roles)
+        {
+            var rolesSplit = roles.Split(",");
+            foreach (var r in rolesSplit)
+            {
+                if (manager.IsInRole(user, r)) return true;
+            }
+            return false;
+        }
+        public static async Task<bool> IsInAllRolesAsync(this UserManager<User> manager, User user, string roles)
+        {
+            var rolesSplit = roles.Replace(" ", "").Split(",");
+            foreach (var r in rolesSplit)
+            {
+                if (!(await manager.IsInRoleAsync(user, r))) return false;
+            }
+            return true;
+        }
+        public static bool IsInAllRoles(this UserManager<User> manager, User user, string roles)
+        {
+            var rolesSplit = roles.Replace(" ", "").Split(",");
+            foreach (var r in rolesSplit)
+            {
+                if (!manager.IsInRole(user, r)) return false;
+            }
+            return true;
+        }
+
+        public static async Task<bool> IsInRoleAsync(this UserManager<User> manager, string role)
+        {
+            var currentUser = await manager.GetUserAsync(System.Security.Claims.ClaimsPrincipal.Current);
+            return await manager.IsInRoleAsync(currentUser, role);
+        }
+        public static bool IsInRole(this UserManager<User> manager, string role)
+        {
+            var currentUser = manager.GetUserAsync(ClaimsPrincipal.Current).Result;
+            return manager.IsInRole(currentUser, role);
+        }
+
+        public static bool IsInAllRoles(this ClaimsPrincipal claim, string roles)
+        {
+            var rolesSplit = roles.Replace(" ", "").Split(",");
+            foreach (var r in rolesSplit)
+            {
+                if (!claim.IsInRole(r)) return false;
+            }
+            return true;
+        }
+        public static bool IsInAnyRole(this ClaimsPrincipal claim, string roles)
+        {
+            var rolesSplit = roles.Replace(" ", "").Split(",");
+            foreach (var r in rolesSplit)
+            {
+                if (claim.IsInRole(r)) return true;
+            }
+            return false;
         }
     }
 }

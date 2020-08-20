@@ -1,5 +1,4 @@
 ﻿@model News_Website.Models.Article
-
 @{
     ViewData["Title"] = "Edit";
 }
@@ -42,7 +41,11 @@
     </div>
 </div>
 
-<div>
+<div class="row d-flex flex-row justify-content-between mt-4">
+    @if (Model.ArticleId != null && Model.ArticleId != 0 && User.IsInAnyRole("SystemAdmin,Admin"))
+    {
+        <a asp-action="Delete" asp-route-id="@Model.ArticleId" class="btn btn-danger">Delete Article</a>
+    }
     <a asp-action="Index">Back to List</a>
 </div>
 
@@ -51,7 +54,18 @@
     <script type="text/javascript" src="~/js/defaultSummernote.js"></script>
     <script>
         const formName = "form#edit-article";
+
+        function uploadImages() {
+
+        }
+
+
         $(function () {
+            $(".body").on("click", ".submit-button", function (e) {
+                $(".submit-button").attr("disabled", true);
+                $('this').val("Working...");
+                $('this').text("Working...");
+            });
             $("body").on("click", "#save-draft-and-close", function (e) {
                 e.preventDefault();
                 $("input#ToPublish").val("false");
@@ -91,6 +105,8 @@
                                 $("#_edit-partial").html(data);
                                 defaultSummerNote();
                                 var save = $("#save-draft");
+                                
+                                $(".submit-button").attr("disabled", false);
                                 save.toggleClass("btn-primary btn-secondary");
                                 save.html("<i class='fas fa-check'></i> Draft Saved!");
                                 setTimeout(function () {
@@ -136,6 +152,7 @@
                                 $("#_edit-partial").html(data);
                                 defaultSummerNote();
                                 var save = $("#save-and-publish");
+                                $(".submit-button").attr("disabled", false);
                                 save.toggleClass("btn-warning btn-secondary");
                                 save.html("<i class='fas fa-check'></i> Saved and Published!");
                                 setTimeout(function () {

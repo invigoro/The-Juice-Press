@@ -13,6 +13,12 @@
                     <input asp-for="Title" class="form-control" />
                     <span asp-validation-for="Title" class="text-danger"></span>
                 </div>
+                <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <select asp-for="Category" asp-items='(Html.GetEnumSelectList<ArticleCategory>()?.Prepend(new SelectListItem {Value = "", Text = "None"}))'>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
                 @if (Model.CoverImage != null)
                 {
                     <div class="form-group">
@@ -22,7 +28,7 @@
                             </div>
                             <div class="col-auto"><img class="img-thumbnail" style="max-height: 50px; max-width: 70px" src="@Model.CoverImage.Url" /></div>
                         </div>
-                        
+
                     </div>
                 }
                 <div class="form-group">
@@ -36,7 +42,6 @@
                     <span asp-validation-for="DraftContent" class="text-danger"></span>
                 </div>
                 <input type="hidden" asp-for="DraftContentEncoded" />
-
                 @if (User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
                 {
                     <div class="form-group form-check">
@@ -49,10 +54,10 @@
                 <input type="hidden" asp-for="FromAjax" />
 
                 <div class="form-group float-right">
-                    <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2">Save Draft</button>
-                    <button type="button" id="save-draft-and-close" class="btn btn-primary ml-2 mr-2">Save Draft & Close</button>
-                    <button type="button" id="save-and-publish" class="btn btn-warning ml-2 mr-2" title="Note: this will not make it viewable.">Save & Publish</button>
-                    <button type="button" id="save-publish-and-close" class="btn btn-warning ml-2 mr-2" title="Note: this will not make it viewable.">Save, Publish, & Close</button>
+                    <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2 submit-button">Save Draft</button>
+                    <button type="button" id="save-draft-and-close" class="btn btn-primary ml-2 mr-2 submit-button">Save Draft & Close</button>
+                    <button type="button" id="save-and-publish" class="btn btn-warning ml-2 mr-2 submit-button" title="Note: this will not make it viewable.">Save & Publish</button>
+                    <button type="button" id="save-publish-and-close" class="btn btn-warning ml-2 mr-2 submit-button" title="Note: this will not make it viewable.">Save, Publish, & Close</button>
                 </div>
             </div>
         </form>
