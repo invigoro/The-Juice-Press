@@ -21,5 +21,11 @@ namespace News_Website.Models
         [NotMapped]
         public virtual IFormFile File { get; set; }
         public string StorageName { get; set; }
+        [Display(Name="Caption or copyright")]
+        [StringLength(1000)]
+        public string Description { get; set; }
+        [Display(Name = "Alt Text")]
+        [StringLength(1000)]
+        public string AltText { get; set; }
     }
 }
