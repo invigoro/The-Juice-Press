@@ -28,6 +28,12 @@ namespace News_Website.Data
                 .HasOne(x => x.User)
                 .WithMany(x => x.Articles)
                 .HasForeignKey(x => x.UserId);
+            builder.Entity<ArticleBlobFile>()
+                .HasKey(s => new { s.ArticleId, s.BlobFileId });
+            builder.Entity<ArticleBlobFile>()
+                .HasOne(x => x.Article)
+                .WithMany(x => x.ArticleBlobFiles)
+                .HasForeignKey(x => x.ArticleId);
             builder.Entity<Article>()
                 .HasAlternateKey(x => x.UrlShortCode);
             //builder.Entity<IdentityRole>().HasData(
