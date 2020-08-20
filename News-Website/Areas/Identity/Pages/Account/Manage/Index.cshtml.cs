@@ -1,12 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using News_Website.Data;
 using News_Website.Models;
+using News_Website.Services;
 
 namespace News_Website.Areas.Identity.Pages.Account.Manage
 {
@@ -14,13 +18,19 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private ICloudStorage _cloudStorage;
+        private readonly ApplicationDbContext db;
 
         public IndexModel(
             UserManager<User> userManager,
-            SignInManager<User> signInManager)
+            SignInManager<User> signInManager,
+            ICloudStorage cloudStorage,
+            ApplicationDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _cloudStorage = cloudStorage;
+            this.db = db;
         }
 
         public string Username { get; set; }
@@ -36,6 +46,21 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
             [Phone]
             [Display(Name = "Phone number")]
             public string PhoneNumber { get; set; }
+            [Required]
+            [Display(Name = "Display Name")]
+            [StringLength(255)]
+            public string DisplayName { get; set; }
+            [StringLength(255)]
+            [PersonalData]
+            public string FirstName { get; set; }
+            [StringLength(255)]
+            [PersonalData]
+            public string LastName { get; set; }
+            [Display(Name = "Upload New Profile Image")]
+            public virtual IFormFile ProfileImageUpload { get; set; }
+            [Display(Name = "Profile Image")]
+            public virtual BlobFile ProfileImage { get; set; }
+
         }
 
         private async Task LoadAsync(User user)
@@ -47,7 +72,12 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                PhoneNumber = phoneNumber
+                PhoneNumber = phoneNumber,
+                DisplayName = user.DisplayName,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                ProfileImage = user.ProfileImage,
+                
             };
         }
 
@@ -88,9 +118,50 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
                 }
             }
 
+            user.DisplayName = Input.DisplayName;
+            user.FirstName = Input.FirstName;
+            user.LastName = Input.LastName;
+
+            if (Input.ProfileImageUpload != null)
+            {
+                user.ProfileImageUpload =  Input.ProfileImageUpload;
+                if (user.ProfileImage != null)
+                {
+                    try
+                    {
+                        await _cloudStorage.DeleteFileAsync(user.ProfileImage.StorageName);
+                    }
+                    catch (Exception e)
+                    {
+
+                    }
+                    var toRemove = user.ProfileImage;
+                    user.ProfileImage = null;
+                    db.BlobFiles.Remove(toRemove);
+                }
+                await UploadFile(user);
+            }
+
+            await _userManager.UpdateAsync(user);
+            
+
             await _signInManager.RefreshSignInAsync(user);
             StatusMessage = "Your profile has been updated";
             return RedirectToPage();
         }
+        private async Task UploadFile(User user)
+        {
+            string fileNameForStorage = FormFileName(user.FullName + " Profile Image", user.ProfileImageUpload.FileName);
+            user.ProfileImage = await _cloudStorage.UploadFileToBlobAsync(user.ProfileImageUpload, fileNameForStorage);
+            await db.SaveChangesAsync();
+        }
+
+        private static string FormFileName(string title, string fileName)
+        {
+            var fileExtension = Path.GetExtension(fileName);
+            var fileNameForStorage = $"{title.Replace(" ", "-")}-{DateTime.Now.ToString("yyyyMMddHHmmss")}{fileExtension}";
+            return fileNameForStorage;
+        }
     }
+
 }
