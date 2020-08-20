@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta property="og:site_name" content="satire" />
-    <meta property="og:image" content='@ViewData["CoverImage"]' />
+    <meta property="og:image" content='@(ViewData["CoverImage"] ?? "")' />
 
     <title>@ViewData["Title"] - The Juice Press</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
@@ -31,6 +31,10 @@
                     {
                         <partial name="_LoginPartial" />
                     }
+                    <form class="form-inline my-2 my-lg-0" asp-action="search" asp-controller="articles">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-dark" type="submit"><i class="fas fa-lg fa-search" title="Search"></i></button>
+                    </form>
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
