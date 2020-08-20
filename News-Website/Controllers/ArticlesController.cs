@@ -50,10 +50,28 @@ namespace News_Website.Controllers
             id = id?.ToLower();
             List<Article> articles = await db.Articles?.ToListAsync();
             var categories = EnumHelper<ArticleCategory>.GetDisplayValues(ArticleCategory.Entertainment)?.Select(x => x.ToLower());
-            if(id == "latest") { articles = articles.OrderByDescending(x => x.PublishedOn)?.ToList(); }
-            else if (categories.Contains(id)) { articles = articles.Where(x => x.Category != null)?.ToList()?.Where(x => EnumHelper<ArticleCategory>.GetDisplayValue((ArticleCategory)x.Category).ToLower() == id)?.ToList(); }
+            if(id == "latest") { articles = articles.OrderByDescending(x => x.PublishedOn)?.ToList();
+                ViewBag.ResultsTitle = $"Latest News";
+            }
+            else if (categories.Contains(id)) { 
+                articles = articles.Where(x => x.Category != null)?.ToList()?.Where(x => EnumHelper<ArticleCategory>.GetDisplayValue((ArticleCategory)x.Category).ToLower() == id)?.ToList();
+                ViewBag.ResultsTitle = $"Latest {char.ToUpper(id[0]) + id.Substring(1)}";
+            }
             if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count()  > 0)) { articles = articles?.Where(x => x.Published)?.ToList(); }
             articles = articles.Take(50)?.ToList();
+            return View(nameof(Index), articles);
+        }
+
+        public async Task<IActionResult> Search(string id)
+        {
+            var searchWords = id?.ToLower()?.Split(" ");
+            var articles = db.Articles?.ToList();
+            if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count() > 0)) { articles = articles?.Where(x => x.Published)?.ToList(); }
+            if (!String.IsNullOrEmpty(id) && searchWords?.Count() > 0)
+            {
+                articles = articles.Where(x => x.Title.ToLower().ContainsAll(searchWords))?.ToList();
+            }
+            ViewBag.ResultsTitle = $"Search results for <i>{id}</i>";
             return View(nameof(Index), articles);
         }
 
@@ -77,33 +95,11 @@ namespace News_Website.Controllers
                 article.TotalViews++;
                 await db.SaveChangesAsync();
             }
+            if (article.CoverImage != null) ViewData["CoverImage"] = article.CoverImage.Url;
             ViewData["Title"] = article.Title;
             return View(article);
         }
 
-        //[Authorize]
-        //// GET: Articles/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //[Authorize]
-        //// POST: Articles/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("ArticleId,Title,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published")] Article article)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        db.Add(article);
-        //        await db.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(article);
-        //}
 
         // GET: Articles/Edit/5
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
