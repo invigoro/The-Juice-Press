@@ -45,6 +45,9 @@ namespace News_Website.Models
         [NotMapped]
         [Display(Name = "Upload New Cover Image")]
         public virtual IFormFile CoverImageUpload { get; set; }
+        public virtual List<ArticleBlobFile> ArticleBlobFiles { get; set; }
+        [NotMapped]
+        public List<int> CurrentBlobFiles { get; set; }
     }
 
     public enum ArticleCategory
@@ -55,6 +58,14 @@ namespace News_Website.Models
         Sports = 2000,
         [Display(Name = "Entertainment")]
         Entertainment = 3000,
+    }
+
+    public class ArticleBlobFile
+    {
+        public virtual Article Article { get; set; }
+        public int ArticleId { get; set; }
+        public virtual BlobFile BlobFile { get; set; }
+        public int BlobFileId { get; set; }
     }
 
     public class ArticleAuthor
