@@ -11,7 +11,7 @@
             ['fontstyle', ['color', 'clear', 'strikethrough', 'superscript', 'subscript']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['height', ['height']],
-            ['insert', ['link', 'table']],
+            ['insert', ['link', 'table', 'picture']],
             ['view', ['fullscreen', 'codeview', 'help']],
             ['options', ['undo', 'redo']]
         ],
@@ -19,8 +19,29 @@
         callbacks: {
             onChange: function (contents, $editable) {
                 $("#DraftContentEncoded").val(encodeURIComponent(contents));
-            }
+            },
+            //onImageUpload: function (files) {
+            //    console.log(files);
+            //}
+        },
+        popover: {
+            image: [
+                ['custom', ['imageAttributes']],
+                ['image', ['resizeFull', 'resizeHalf', 'resizeQuarter', 'resizeNone']],
+                ['float', ['floatLeft', 'floatRight', 'floatNone']],
+                ['remove', ['removeMedia']]
+            ],
+        },
+        lang: 'en-US',
+        imageAttributes: {
+            icon: '<i class="note-icon-pencil"/>',
+            removeEmpty: true, // true = remove attributes | false = leave empty if present
+            disableUpload: true // true = don't display Upload Options | Display Upload Options
         }
+    });
+    $('.summernote').summernote('insertImage', url, function ($image) {
+        //$image.css('width', $image.width() / 3);
+        $image.attr('alt', 'The Juice Press');
     });
 }
 

@@ -110,6 +110,15 @@ namespace News_Website
 
             app.UseForwardedHeaders(forwardedHeadersOptions);
 
+            app.Use(async (context, next) =>
+            {
+                var host = context.Request.Host.Host;
+                var path = context.Request.Path.Value;
+
+                await next();
+
+            });
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
