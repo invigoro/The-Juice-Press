@@ -27,7 +27,7 @@ namespace News_Website.Controllers
         [Authorize(Roles = "Admin")]
         public IActionResult Index()
         {
-            var users = db.Users?.ToList();
+            var users = db.Users/*.Where(x => x.Id != currentUserId)*/?.ToList();
             return View(users);
         }
         [Authorize(Roles="SuperAdmin")]
@@ -42,6 +42,8 @@ namespace News_Website.Controllers
                 UserId = id,
                 Viewer = roles.Contains("Viewer"),
                 Editor = roles.Contains("Editor"),
+                Overwriter = roles.Contains("Overwriter"),
+                Publisher = roles.Contains("Publisher"),
                 Admin = roles.Contains("Admin"),
                 SuperAdmin = roles.Contains("SuperAdmin"),
 
@@ -50,7 +52,7 @@ namespace News_Website.Controllers
         }
         [HttpPost]
         [Authorize(Roles = "SuperAdmin")]
-        public async Task<IActionResult> EditRoles(string id, [Bind("UserId, Viewer, Editor, Admin, SuperAdmin")]SetUserRolesViewModel roles)
+        public async Task<IActionResult> EditRoles(string id, [Bind("UserId, Viewer, Editor, Overwriter, Publisher, Admin, SuperAdmin")]SetUserRolesViewModel roles)
         {
             var user = db.Users?.Find(id);
             if (user == null) return NotFound();
@@ -58,8 +60,10 @@ namespace News_Website.Controllers
             List<string> newRoles = new List<string>();
             if (roles.Viewer) newRoles.Add("Viewer");
             if (roles.Editor) newRoles.Add("Editor");
+            if (roles.Overwriter) newRoles.Add("Overwriter");
+            if (roles.Publisher) newRoles.Add("Publisher");
             if (roles.Admin) newRoles.Add("Admin");
-            if (roles.SuperAdmin) newRoles.Add("SuperAdmin");
+            if (User.IsInRole("SuperAdmin") && roles.SuperAdmin) newRoles.Add("SuperAdmin");
 
 
             var currentRoles = await _userManager.GetRolesAsync(user);
