@@ -23,18 +23,30 @@
         </div>
         <div class="form-group form-check">
             <label class="form-check-label">
+                <input class="form-check-input" asp-for="Overwriter" /> @Html.DisplayNameFor(model => model.Overwriter)
+            </label>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="Publisher" /> @Html.DisplayNameFor(model => model.Publisher)
+            </label>
+        </div>
+        <div class="form-group form-check">
+            <label class="form-check-label">
                 <input class="form-check-input" asp-for="Admin" /> @Html.DisplayNameFor(model => model.Admin)
             </label>
         </div>
+        @if (User.IsInRole("SuperAdmin"))
+        {
         <div class="form-group form-check">
             <label class="form-check-label">
                 <input class="form-check-input" asp-for="SuperAdmin" /> @Html.DisplayNameFor(model => model.SuperAdmin)
             </label>
         </div>
-
+        }
         <div class="form-group float-right">
             <input type="submit" value="Update" class="btn btn-primary ml-2 mr-2" />
-            
+
         </div>
     </div>
 </form>
