@@ -42,7 +42,7 @@
                     <span asp-validation-for="DraftContent" class="text-danger"></span>
                 </div>
                 <input type="hidden" asp-for="DraftContentEncoded" />
-                @if (User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
+                @if (User?.IsInRole("Publisher") == true || User?.IsInRole("SuperAdmin") == true)
                 {
                     <div class="form-group form-check">
                         <label class="form-check-label">
@@ -56,8 +56,11 @@
                 <div class="form-group float-right">
                     <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2 submit-button">Save Draft</button>
                     <button type="button" id="save-draft-and-close" class="btn btn-primary ml-2 mr-2 submit-button">Save Draft & Close</button>
+                    @if (User?.IsInRole("Overwriter") == true)
+                    {
                     <button type="button" id="save-and-publish" class="btn btn-warning ml-2 mr-2 submit-button" title="Note: this will not make it viewable.">Save & Publish</button>
                     <button type="button" id="save-publish-and-close" class="btn btn-warning ml-2 mr-2 submit-button" title="Note: this will not make it viewable.">Save, Publish, & Close</button>
+                    }
                 </div>
             </div>
         </form>
