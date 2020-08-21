@@ -20,7 +20,8 @@ namespace News_Website.Models
         public string DraftContent { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
         public DateTime EditedOn { get; set; } = DateTime.UtcNow;
-        public DateTime? PublishedOn { get; set; } = DateTime.UtcNow;
+        public DateTime? PublishedOn { get; set; }
+        public DateTime? OverwrittenOn { get; set; }
         [Display(Name="Publicly Viewable")]
         public bool Published { get; set; } = false;
         [NotMapped]
@@ -58,6 +59,8 @@ namespace News_Website.Models
         Sports = 2000,
         [Display(Name = "Entertainment")]
         Entertainment = 3000,
+        [Display(Name = "Opinion")]
+        Opinion = 4000,
     }
 
     public class ArticleBlobFile
