@@ -190,12 +190,13 @@ namespace News_Website.Controllers
             //var roles = await _userManager.GetRolesAsync(currentUser);
 
 
-            a.Published = await _userManager.IsInAnyRoleAsync(currentUser, "SuperAdmin,Admin")/*roles.Contains("SuperAdmin") || roles.Contains("Admin") */? article.Published : a.Published;
+            a.Published = await _userManager.IsInAnyRoleAsync(currentUser, "Publisher")/*roles.Contains("SuperAdmin") || roles.Contains("Admin") */? article.Published : a.Published;
             
-            if(article.ToPublish)
+            if(article.ToPublish && User.IsInRole("Overwriter"))
             {
-                a.PublishedOn = DateTime.UtcNow;
+                if(a.PublishedOn == null) a.PublishedOn = DateTime.UtcNow;
                 a.Content = article.DraftContent;
+                a.OverwrittenOn = DateTime.UtcNow;
             }
 
             if (ModelState.IsValid)
