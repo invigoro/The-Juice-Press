@@ -127,7 +127,7 @@ namespace News_Website
                 endpoints.MapRazorPages();
             });
 
-            //CreateRoles(serviceProvider).Wait();
+            CreateRoles(serviceProvider).Wait();
         }
 
         private async Task CreateRoles(IServiceProvider serviceProvider)
@@ -135,7 +135,7 @@ namespace News_Website
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            string[] roleNames = { "SuperAdmin", "Admin", "Editor", "Viewer" };
+            string[] roleNames = { "SuperAdmin", "Admin", "Publisher", "Overwriter", "Editor", "Viewer" };
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)
@@ -167,20 +167,27 @@ namespace News_Website
                 var createPowerUser = await UserManager.CreateAsync(poweruser, userPWD);
                 if (createPowerUser.Succeeded)
                 {
-                    //here we tie the new user to the role
-                    await UserManager.AddToRoleAsync(poweruser, "SuperAdmin");
-                    await UserManager.AddToRoleAsync(poweruser, "Admin");
-                    await UserManager.AddToRoleAsync(poweruser, "Editor");
-                    await UserManager.AddToRoleAsync(poweruser, "Viewer");
+                    foreach(var roleName in roleNames)
+                    {
+                        try
+                        {
+                            await UserManager.AddToRoleAsync(poweruser, roleName);
+                        }
+                        catch(Exception e) { Console.WriteLine(e); }
+                    }
 
                 }
             }
             else
             {
-                await UserManager.AddToRoleAsync(_user, "SuperAdmin");
-                await UserManager.AddToRoleAsync(_user, "Admin");
-                await UserManager.AddToRoleAsync(_user, "Editor");
-                await UserManager.AddToRoleAsync(_user, "Viewer");
+                foreach (var roleName in roleNames)
+                {
+                    try
+                    {
+                        await UserManager.AddToRoleAsync(_user, roleName);
+                    }
+                    catch (Exception e) { Console.WriteLine(e); }
+                }
 
             }
         }

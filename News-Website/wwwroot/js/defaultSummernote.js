@@ -11,7 +11,7 @@
             ['fontstyle', ['color', 'clear', 'strikethrough', 'superscript', 'subscript']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['height', ['height']],
-            ['insert', ['link', 'table', 'picture']],
+            ['insert', ['link', 'table', 'picture', 'video']],
             ['view', ['fullscreen', 'codeview', 'help']],
             ['options', ['undo', 'redo']]
         ],
