@@ -11,6 +11,8 @@ namespace News_Website.Models.Admin
         public string UserId { get; set; }
         public bool Viewer { get; set; }
         public bool Editor { get; set; }
+        public bool Overwriter { get; set; }
+        public bool Publisher { get; set; }
         public bool Admin { get; set; }
         public bool SuperAdmin { get; set; }
     }
