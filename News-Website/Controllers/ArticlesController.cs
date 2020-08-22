@@ -22,7 +22,8 @@ namespace News_Website.Controllers
 
         public ArticlesController(ApplicationDbContext context, 
             UserManager<User> userManager, 
-            ILogger<BaseController> logger, ICloudStorage cloudStorage) : base(context, userManager, logger, cloudStorage)
+            ILogger<BaseController> logger,
+            BlobStorageService blobStorage) : base(context, userManager, logger, blobStorage)
         {
         }
 
@@ -174,7 +175,7 @@ namespace News_Website.Controllers
                 {
                     try
                     {
-                        await _cloudStorage.DeleteFileAsync(a.CoverImage.StorageName);
+                        _blobStorage.DeleteBlobData(a.CoverImage.Url);
                     }
                     catch(Exception e)
                     {
@@ -277,9 +278,16 @@ namespace News_Website.Controllers
         private async Task UploadFile(Article article)
         {
             string fileNameForStorage = FormFileName(article.Title, article.CoverImageUpload.FileName);
-            article.CoverImage = await _cloudStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
+            article.CoverImage = await _blobStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
             await db.SaveChangesAsync();
         }
+
+        //private async Task UploadFile(Article article)
+        //{
+        //    string fileNameForStorage = FormFileName(article.Title, article.CoverImageUpload.FileName);
+        //    article.CoverImage = await _cloudStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
+        //    await db.SaveChangesAsync();
+        //}
 
         private static string FormFileName(string title, string fileName)
         {
