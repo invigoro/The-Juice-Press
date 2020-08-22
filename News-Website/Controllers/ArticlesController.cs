@@ -98,6 +98,7 @@ namespace News_Website.Controllers
             }
             if (article.CoverImage != null) ViewData["CoverImage"] = article.CoverImage.Url;
             ViewData["Title"] = article.Title;
+            ViewData["IsArticle"] = true;
             return View(article);
         }
 

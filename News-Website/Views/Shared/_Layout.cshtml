@@ -3,8 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta property="og:site_name" content="satire" />
-    <meta property="og:image" content='@(ViewData["CoverImage"] ?? "")' />
+    @if(ViewData["IsArticle"]) {
+        <meta property="og:site_name" content="satire" />
+        <meta property="og:image" content='@(ViewData["CoverImage"] ?? "")' />
+    }
 
     <title>@ViewData["Title"] - The Juice Press</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
