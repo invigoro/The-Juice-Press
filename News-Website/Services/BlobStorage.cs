@@ -17,7 +17,7 @@ namespace News_Website.Services
 
         public BlobStorageService(IConfiguration Configuration)
         {
-            this.accessKey = Configuration["AccessKey"];
+            this.accessKey = Configuration["BlobAccessKey"];
         }
 
         public string UploadFileToBlob(string strFileName, byte[] fileData, string fileMimeType)
