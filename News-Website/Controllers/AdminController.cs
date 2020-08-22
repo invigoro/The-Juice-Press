@@ -21,8 +21,8 @@ namespace News_Website.Controllers
         public AdminController(ApplicationDbContext context,
             UserManager<User> userManager,
             ILogger<BaseController> logger,
-            BlobStorageService blobStorage, 
-            RoleManager<IdentityRole> roleManager) : base(context, userManager, logger, blobStorage)
+            ICloudStorage cloudStorage,
+            RoleManager<IdentityRole> roleManager) : base(context, userManager, logger, cloudStorage)
         {
             _roleManager = roleManager;
         }

@@ -18,7 +18,7 @@ namespace News_Website.Controllers
         public HomeController(ApplicationDbContext context,
             UserManager<User> userManager,
             ILogger<BaseController> logger,
-            BlobStorageService blobStorage) : base(context, userManager, logger, blobStorage)
+            ICloudStorage cloudStorage) : base(context, userManager, logger, cloudStorage)
         {
         }
 
