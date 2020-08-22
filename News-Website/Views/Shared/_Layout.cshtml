@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @if(ViewData["IsArticle"]) {
+    @if(ViewData["IsArticle"] != null) {
         <meta property="og:site_name" content="satire" />
         <meta property="og:image" content='@(ViewData["CoverImage"] ?? "")' />
     }
