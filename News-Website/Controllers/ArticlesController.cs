@@ -23,7 +23,7 @@ namespace News_Website.Controllers
         public ArticlesController(ApplicationDbContext context, 
             UserManager<User> userManager, 
             ILogger<BaseController> logger,
-            BlobStorageService blobStorage) : base(context, userManager, logger, blobStorage)
+            ICloudStorage cloudStorage) : base(context, userManager, logger, cloudStorage)
         {
         }
 
@@ -175,7 +175,7 @@ namespace News_Website.Controllers
                 {
                     try
                     {
-                        _blobStorage.DeleteBlobData(a.CoverImage.Url);
+                        await _cloudStorage.DeleteFileAsync(a.CoverImage.StorageName);
                     }
                     catch(Exception e)
                     {
@@ -275,19 +275,19 @@ namespace News_Website.Controllers
             return db.Articles.Any(e => e.ArticleId == id);
         }
 
-        private async Task UploadFile(Article article)
-        {
-            string fileNameForStorage = FormFileName(article.Title, article.CoverImageUpload.FileName);
-            article.CoverImage = await _blobStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
-            await db.SaveChangesAsync();
-        }
-
         //private async Task UploadFile(Article article)
         //{
         //    string fileNameForStorage = FormFileName(article.Title, article.CoverImageUpload.FileName);
-        //    article.CoverImage = await _cloudStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
+        //    article.CoverImage = await _blobStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
         //    await db.SaveChangesAsync();
         //}
+
+        private async Task UploadFile(Article article)
+        {
+            string fileNameForStorage = FormFileName(article.Title, article.CoverImageUpload.FileName);
+            article.CoverImage = await _cloudStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
+            await db.SaveChangesAsync();
+        }
 
         private static string FormFileName(string title, string fileName)
         {
