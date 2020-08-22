@@ -1,6 +1,9 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using ServiceLayer.AppConfig;
+﻿using Microsoft.Azure.Storage;
+using Microsoft.Azure.Storage.Blob;
+using Microsoft.Extensions.Configuration;
+//using Microsoft.WindowsAzure.Storage;
+//using Microsoft.WindowsAzure.Storage.Blob;
+//using ServiceLayer.AppConfig;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,9 +15,9 @@ namespace News_Website.Services
     {
         string accessKey = string.Empty;
 
-        public BlobStorageService()
+        public BlobStorageService(IConfiguration Configuration)
         {
-            this.accessKey = AppConfiguration.GetConfiguration("AccessKey");
+            this.accessKey = Configuration["AccessKey"];
         }
 
         public string UploadFileToBlob(string strFileName, byte[] fileData, string fileMimeType)
