@@ -15,10 +15,10 @@ namespace News_Website.Controllers
     public class HomeController : BaseController
     {
         
-        public HomeController(ApplicationDbContext context, 
-            UserManager<User> userManager, 
+        public HomeController(ApplicationDbContext context,
+            UserManager<User> userManager,
             ILogger<BaseController> logger,
-            ICloudStorage cloudStorage) : base(context, userManager, logger, cloudStorage)
+            BlobStorageService blobStorage) : base(context, userManager, logger, blobStorage)
         {
         }
 

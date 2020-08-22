@@ -18,18 +18,18 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private ICloudStorage _cloudStorage;
+        private BlobStorageService _blobStorage;
         private readonly ApplicationDbContext db;
 
         public IndexModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            ICloudStorage cloudStorage,
+            BlobStorageService blobStorage,
             ApplicationDbContext db)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _cloudStorage = cloudStorage;
+            _blobStorage = blobStorage;
             this.db = db;
         }
 
@@ -129,7 +129,7 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
                 {
                     try
                     {
-                        await _cloudStorage.DeleteFileAsync(user.ProfileImage.StorageName);
+                        _blobStorage.DeleteBlobData(user.ProfileImage.Url);
                     }
                     catch (Exception e)
                     {
@@ -152,7 +152,7 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
         private async Task UploadFile(User user)
         {
             string fileNameForStorage = FormFileName(user.FullName + " Profile Image", user.ProfileImageUpload.FileName);
-            user.ProfileImage = await _cloudStorage.UploadFileToBlobAsync(user.ProfileImageUpload, fileNameForStorage);
+            user.ProfileImage = await _blobStorage.UploadFileToBlobAsync(user.ProfileImageUpload, fileNameForStorage);
             await db.SaveChangesAsync();
         }
 
