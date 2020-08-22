@@ -19,21 +19,21 @@ namespace News_Website
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .ConfigureAppConfiguration((hostingContext, config) =>
-            {
-                if (!hostingContext.HostingEnvironment.IsDevelopment())
-                {
-                    var parentDir = Directory.GetParent(hostingContext.HostingEnvironment.ContentRootPath);
-                    var path = string.Concat(parentDir.FullName, "..\\Configuration\\appsettings.json");
-                    config.AddJsonFile(path, optional: false, reloadOnChange: true);
-                }
-                else
-                {
-                    var parentDir = Directory.GetParent(hostingContext.HostingEnvironment.ContentRootPath);
-                    var path = string.Concat(parentDir.FullName, "\\News-Website\\Configuration\\appsettings.json");
-                    config.AddJsonFile(path, optional: false, reloadOnChange: true);
-                }
-            })
+            //.ConfigureAppConfiguration((hostingContext, config) =>
+            //{
+            //    if (!hostingContext.HostingEnvironment.IsDevelopment())
+            //    {
+            //        var parentDir = Directory.GetParent(hostingContext.HostingEnvironment.ContentRootPath);
+            //        var path = string.Concat(parentDir.FullName, "..\\Configuration\\appsettings.json");
+            //        config.AddJsonFile(path, optional: false, reloadOnChange: true);
+            //    }
+            //    else
+            //    {
+            //        var parentDir = Directory.GetParent(hostingContext.HostingEnvironment.ContentRootPath);
+            //        var path = string.Concat(parentDir.FullName, "\\News-Website\\Configuration\\appsettings.json");
+            //        config.AddJsonFile(path, optional: false, reloadOnChange: true);
+            //    }
+            //})
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
