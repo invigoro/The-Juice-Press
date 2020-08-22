@@ -66,6 +66,7 @@ namespace News_Website
 
             services.AddTransient<IEmailSender, EmailSender>();
             services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
+            services.AddSingleton<BlobStorageService>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.ConfigureApplicationCookie(o => {
                 o.ExpireTimeSpan = TimeSpan.FromDays(5);
