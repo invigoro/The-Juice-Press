@@ -344,3 +344,4 @@ healthchecksdb
 /News-Website/Configuration
 /News-Website/appsettings.json
 /News-Website/appsettings.Development.json
+/News-Website/*.json
