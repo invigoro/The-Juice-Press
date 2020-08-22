@@ -1,6 +1,8 @@
-﻿using Microsoft.Azure.Storage;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Storage;
 using Microsoft.Azure.Storage.Blob;
 using Microsoft.Extensions.Configuration;
+using News_Website.Models;
 //using Microsoft.WindowsAzure.Storage;
 //using Microsoft.WindowsAzure.Storage.Blob;
 //using ServiceLayer.AppConfig;
@@ -18,6 +20,23 @@ namespace News_Website.Services
         public BlobStorageService(IConfiguration Configuration)
         {
             this.accessKey = Configuration["BlobAccessKey"];
+        }
+
+        public async Task<BlobFile> UploadFileToBlobAsync(IFormFile file, string fileName)
+        {
+            BlobFile b = null;
+            using (var ms = new MemoryStream())
+            {
+                await file.CopyToAsync(ms);
+                byte[] fileBytes = ms.ToArray();
+                var url = await UploadFileToBlobAsync(fileName, fileBytes, file.ContentType);
+                b = new BlobFile
+                {
+                    StorageName = fileName,
+                    Url = url,
+                };
+            }
+            return b;
         }
 
         public string UploadFileToBlob(string strFileName, byte[] fileData, string fileMimeType)
