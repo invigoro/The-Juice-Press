@@ -65,7 +65,7 @@ namespace News_Website
             services.AddRazorPages().AddRazorRuntimeCompilation();
 
             services.AddTransient<IEmailSender, EmailSender>();
-            //services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
+            services.AddSingleton<ICloudStorage, GoogleCloudStorage>();
             services.AddSingleton<BlobStorageService>();
             services.Configure<AuthMessageSenderOptions>(Configuration);
             services.ConfigureApplicationCookie(o => {
