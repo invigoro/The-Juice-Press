@@ -342,4 +342,5 @@ healthchecksdb
 # Config File 
 /Configuration
 /News-Website/Configuration
-appsettings.json
+/News-Website/appsettings.json
+/News-Website/appsettings.Development.json
