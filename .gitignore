@@ -345,3 +345,4 @@ healthchecksdb
 /News-Website/appsettings.json
 /News-Website/appsettings.Development.json
 /News-Website/*.json
+/News-Website/app.yaml
