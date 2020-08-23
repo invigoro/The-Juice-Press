@@ -68,26 +68,27 @@
 <script type="text/javascript">
     $(function () {
 
+        $("#dialog").dialog({
+            autoOpen: false,
+            modal: true
+        });
+
+        $("body").on("click", "#delete-profile-image", function (e) {
+
             $("#dialog").dialog({
-                autoOpen: false,
-                modal: true
-            });
-
-            $("body").on("click", "#delete-profile-image", function (e) {
-
-                $("#dialog").dialog({
-                    buttons: {
-                        "Confirm": function () {
-                            $("input#DeleteProfileImage").val("true");
-                            $("#current-profile-image").remove();
-                            $(this).dialog("close");
-                        },
-                        "Cancel": function () {
-                            $(this).dialog("close");
-                        }
+                buttons: {
+                    "Confirm": function () {
+                        $("input#Input_DeleteProfileImage").val("true");
+                        $("#current-profile-image").remove();
+                        $(this).dialog("close");
+                    },
+                    "Cancel": function () {
+                        $(this).dialog("close");
                     }
-                });
-                $("#dialog").dialog("open");
-            })
+                }
+            });
+            $("#dialog").dialog("open");
+        })
+    })
 </script>
 }
