@@ -135,7 +135,7 @@ namespace News_Website.Controllers
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,ToPublish,FromAjax")] Article article)
+        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,DeleteCoverImage,ToPublish,FromAjax")] Article article)
         {
 
             var a = await db.Articles.FindAsync(article.ArticleId);
@@ -168,24 +168,23 @@ namespace News_Website.Controllers
             a.DraftContent = article.DraftContent;
             a.EditedOn = DateTime.UtcNow;
             a.Category = article.Category == null ? (ArticleCategory?)null : article.Category;
+            if(article.DeleteCoverImage || (article.CoverImageUpload != null && a.CoverImage != null))
+            {
+                try
+                {
+                    await _cloudStorage.DeleteFileAsync(a.CoverImage.StorageName);
+                }
+                catch (Exception e)
+                {
 
+                }
+                var toRemove = a.CoverImage;
+                a.CoverImage = null;
+                db.BlobFiles.Remove(toRemove);
+            }
             if(article.CoverImageUpload != null)
             {
                 a.CoverImageUpload = article.CoverImageUpload;
-                if(a.CoverImage != null)
-                {
-                    try
-                    {
-                        await _cloudStorage.DeleteFileAsync(a.CoverImage.StorageName);
-                    }
-                    catch(Exception e)
-                    {
-
-                    }
-                    var toRemove = a.CoverImage;
-                    a.CoverImage = null;
-                    db.BlobFiles.Remove(toRemove);
-                }
                 await UploadFile(a);
             }
 

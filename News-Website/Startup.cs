@@ -101,24 +101,40 @@ namespace News_Website
             app.UseAuthentication();
             app.UseAuthorization();
 
-            var forwardedHeadersOptions = new ForwardedHeadersOptions
-            {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
-                RequireHeaderSymmetry = false
-            };
-            forwardedHeadersOptions.KnownNetworks.Clear();
-            forwardedHeadersOptions.KnownProxies.Clear();
-
-            app.UseForwardedHeaders(forwardedHeadersOptions);
-
+            app.UseForwardedHeaders();
             app.Use(async (context, next) =>
             {
-                var host = context.Request.Host.Host;
-                var path = context.Request.Path.Value;
-
-                await next();
-
+                if (context.Request.IsHttps || context.Request.Headers["X-Forwarded-Proto"] == Uri.UriSchemeHttps)
+                {
+                    await next();
+                }
+                else
+                {
+                    string queryString = context.Request.QueryString.HasValue ? context.Request.QueryString.Value : string.Empty;
+                    var https = "https://" + context.Request.Host + context.Request.Path + queryString;
+                    context.Response.Redirect(https);
+                }
             });
+
+
+            //var forwardedHeadersOptions = new ForwardedHeadersOptions
+            //{
+            //    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto,
+            //    RequireHeaderSymmetry = false
+            //};
+            //forwardedHeadersOptions.KnownNetworks.Clear();
+            //forwardedHeadersOptions.KnownProxies.Clear();
+
+            //app.UseForwardedHeaders(forwardedHeadersOptions);
+
+            //app.Use(async (context, next) =>
+            //{
+            //    var host = context.Request.Host.Host;
+            //    var path = context.Request.Path.Value;
+
+            //    await next();
+
+            //});
 
             app.UseEndpoints(endpoints =>
             {

@@ -25,7 +25,7 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
         public IndexModel(
             UserManager<User> userManager,
             SignInManager<User> signInManager,
-            BlobStorageService blobStorage,
+            //BlobStorageService blobStorage,
             ApplicationDbContext db,
             ICloudStorage cloudStorage)
         {
@@ -62,7 +62,8 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
             [Display(Name = "Upload New Profile Image")]
             public virtual IFormFile ProfileImageUpload { get; set; }
             [Display(Name = "Profile Image")]
-            public virtual BlobFile ProfileImage { get; set; }
+            public BlobFile ProfileImage { get; set; }
+            public bool DeleteProfileImage { get; set; } = false;
 
         }
 
@@ -80,6 +81,7 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 ProfileImage = user.ProfileImage,
+
                 
             };
         }
@@ -125,23 +127,24 @@ namespace News_Website.Areas.Identity.Pages.Account.Manage
             user.FirstName = Input.FirstName;
             user.LastName = Input.LastName;
 
-            if (Input.ProfileImageUpload != null)
+
+            if (Input.DeleteProfileImage || (Input.ProfileImageUpload != null && user.ProfileImage != null))
+            {
+                try
+                {
+                    await _cloudStorage.DeleteFileAsync(user.ProfileImage.StorageName);
+                }
+                catch (Exception e)
+                {
+
+                }
+                var toRemove = user.ProfileImage;
+                user.ProfileImage = null;
+                db.BlobFiles.Remove(toRemove);
+            }
+                if (Input.ProfileImageUpload != null)
             {
                 user.ProfileImageUpload =  Input.ProfileImageUpload;
-                if (user.ProfileImage != null)
-                {
-                    try
-                    {
-                        await _cloudStorage.DeleteFileAsync(user.ProfileImage.StorageName);
-                    }
-                    catch (Exception e)
-                    {
-
-                    }
-                    var toRemove = user.ProfileImage;
-                    user.ProfileImage = null;
-                    db.BlobFiles.Remove(toRemove);
-                }
                 await UploadFile(user);
             }
 

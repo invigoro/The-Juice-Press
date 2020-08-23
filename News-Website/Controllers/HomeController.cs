@@ -41,7 +41,14 @@ namespace News_Website.Controllers
 
             return View(articles);
         }
-
+        public IActionResult TermsOfUse()
+        {
+            return View();
+        }
+        public IActionResult Contact()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

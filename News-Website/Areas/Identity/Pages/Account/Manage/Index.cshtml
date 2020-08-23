@@ -35,16 +35,59 @@
                 <input asp-for="Input.DisplayName" class="form-control" />
                 <span asp-validation-for="Input.DisplayName" class="text-danger"></span>
             </div>
+            @if (Model.Input.ProfileImage != null)
+                {
+            <div class="form-group" id="current-profile-image">
+                <div class="row">
+                    <div class="col-auto">
+                        <div>Current Cover Image: </div>
+                    </div>
+                    <div class="col-auto"><img class="img-thumbnail" style="max-height: 50px; max-width: 70px" src="@Model.Input.ProfileImage.Url" /></div>
+                    <div class="col-auto"><i class="fas fa-times text-danger" id="delete-profile-image"></i></div>
+                </div>
+
+            </div>
+                }
             <div class="form-group">
                 <label asp-for="Input.ProfileImageUpload" class="control-label"></label>
                 <input asp-for="Input.ProfileImageUpload" type="file" class="form-control" />
                 <span asp-validation-for="Input.ProfileImageUpload" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="Input.DeleteProfileImage" />
             <button id="update-profile-button" type="submit" class="btn btn-primary">Save</button>
         </form>
     </div>
 </div>
 
+<div id="dialog" title="Confirmation Required">
+    Are you sure you want to remove this profile picture?
+</div>
+
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+<script type="text/javascript">
+    $(function () {
+
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true
+            });
+
+            $("body").on("click", "#delete-profile-image", function (e) {
+
+                $("#dialog").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            $("input#DeleteProfileImage").val("true");
+                            $("#current-profile-image").remove();
+                            $(this).dialog("close");
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#dialog").dialog("open");
+            })
+</script>
 }

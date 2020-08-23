@@ -49,6 +49,8 @@ namespace News_Website.Models
         public virtual List<ArticleBlobFile> ArticleBlobFiles { get; set; }
         [NotMapped]
         public List<int> CurrentBlobFiles { get; set; }
+        [NotMapped]
+        public bool DeleteCoverImage { get; set; } = false;
     }
 
     public enum ArticleCategory

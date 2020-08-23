@@ -41,10 +41,14 @@
     </div>
 </div>
 
+<div id="dialog" title="Confirmation Required">
+    Are you sure you want to remove this cover image?
+</div>
+
 <div class="row d-flex flex-row justify-content-between mt-4">
     @if (Model.ArticleId != null && Model.ArticleId != 0 && User.IsInAnyRole("SystemAdmin,Admin"))
     {
-        <a asp-action="Delete" asp-route-id="@Model.ArticleId" class="btn btn-danger">Delete Article</a>
+    <a asp-action="Delete" asp-route-id="@Model.ArticleId" class="btn btn-danger">Delete Article</a>
     }
     <a asp-action="Index">Back to List</a>
 </div>
@@ -61,6 +65,28 @@
 
 
         $(function () {
+
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true
+            });
+
+            $("body").on("click", "#delete-cover-image", function (e) {
+
+                $("#dialog").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            $("input#DeleteCoverImage").val("true");
+                            $("#current-cover-image").remove();
+                            $(this).dialog("close");
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#dialog").dialog("open");
+            })
             $(".body").on("click", ".submit-button", function (e) {
                 $(".submit-button").attr("disabled", true);
                 $('this').val("Working...");
@@ -105,7 +131,7 @@
                                 $("#_edit-partial").html(data);
                                 defaultSummerNote();
                                 var save = $("#save-draft");
-                                
+
                                 $(".submit-button").attr("disabled", false);
                                 save.toggleClass("btn-primary btn-secondary");
                                 save.html("<i class='fas fa-check'></i> Draft Saved!");
