@@ -9,5 +9,11 @@ $(function () {
         $(this).attr("action", "/articles/search/" + searchString);
         $(this).unbind();
         $(this).submit();
+
+    });
+
+
+    $(".text-only").each(function () {
+        $(this).text($(this).text());
     })
 })

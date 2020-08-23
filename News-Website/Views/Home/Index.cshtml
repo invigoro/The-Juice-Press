@@ -17,14 +17,14 @@
         }
         @if(headline != null)
         {
-            remainder = remainder.Skip(1)?.ToList();
+            remainder.Remove(headline);
         <div class="col-12 col-lg-6">
             <div class="row mb-3 pb-3 border-bottom">
                 <div class="col">
                     <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@headline.ArticleId">
                         <img src="@headline.CoverImage.Url" class="img-fluid d-inline-block m-auto" style="max-height: 300px;" />
                         <div class="h2 text-justify">@headline.Title</div>
-                        <div class="overflow-hidden" style="max-height: 6rem; line-height: 1.5rem;">@Html.Raw(headline.Content)</div>
+                        <div class="overflow-hidden text-only" style="max-height: 6rem; line-height: 1.5rem;">@Html.Raw(headline.Content)</div>
                     </a>
                 </div>
             </div>
@@ -40,7 +40,7 @@
                         <div class="col">
                             <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@r.ArticleId">
                                 <div class="h2 text-justify">@r.Title</div>
-                                <div class="overflow-hidden" style="max-height: 3rem; line-height: 1.5rem;">@Html.Raw(r.Content)</div>
+                                <div class="overflow-hidden text-only" style="max-height: 3rem; line-height: 1.5rem;">@Html.Raw(r.Content)</div>
                             </a>
                         </div>
                     </div>
