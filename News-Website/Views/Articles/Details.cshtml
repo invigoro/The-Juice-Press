@@ -14,7 +14,12 @@
     </div>
 <div class="row">
     <div class="col-auto">
+        @if(Model.Published && Model.PublishedOn != null)
+        {
+
         <div class="h6 text-dark">@Helpers.FormattedDaysAgo(Model.PublishedOn.Value)</div>
+        
+        }
     </div>
     <div class="col">
         <div class="h6 text-dark">By @Model.PrimaryAuthor?.DisplayName</div>
