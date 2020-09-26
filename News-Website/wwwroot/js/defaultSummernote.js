@@ -7,8 +7,10 @@
         toolbar: [
             ['style', ['style']],
             ['fontoptions', ['fontname', 'fontsize']],
-            ['font', ['bold', 'italic', 'underline']]
-            ['fontstyle', ['color', 'clear', 'strikethrough', 'superscript', 'subscript']],
+            ['font', ['bold', 'italic', 'underline']],
+            ['fontstyle', ['strikethrough', 'superscript', 'subscript']],
+            ['color', ['color', 'forecolor', 'backcolor']],
+            ['clear', ['clear']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['height', ['height']],
             ['insert', ['link', 'table', 'picture', 'video']],
