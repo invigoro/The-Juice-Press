@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using News_Website.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace News_Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200926195323_draft-stuff")]
+    partial class draftstuff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -175,9 +177,6 @@ namespace News_Website.Migrations
                     b.Property<string>("DraftContent")
                         .HasColumnType("text");
 
-                    b.Property<int?>("DraftCoverImageId")
-                        .HasColumnType("integer");
-
                     b.Property<string>("DraftTitle")
                         .HasColumnType("character varying(1000)")
                         .HasMaxLength(1000);
@@ -211,8 +210,6 @@ namespace News_Website.Migrations
                     b.HasAlternateKey("UrlShortCode");
 
                     b.HasIndex("CoverImageId");
-
-                    b.HasIndex("DraftCoverImageId");
 
                     b.ToTable("Articles");
                 });
@@ -414,10 +411,6 @@ namespace News_Website.Migrations
                     b.HasOne("News_Website.Models.BlobFile", "CoverImage")
                         .WithMany()
                         .HasForeignKey("CoverImageId");
-
-                    b.HasOne("News_Website.Models.BlobFile", "DraftCoverImage")
-                        .WithMany()
-                        .HasForeignKey("DraftCoverImageId");
                 });
 
             modelBuilder.Entity("News_Website.Models.ArticleAuthor", b =>

@@ -15,6 +15,8 @@ namespace News_Website.Models
         public string UrlShortCode { get; set; }
         [StringLength(1000)]
         public string Title { get; set; }
+        [StringLength(1000)]
+        public string DraftTitle { get; set; }
         public string Content { get; set; }
         [Display(Name = "Content")]
         public string DraftContent { get; set; }
@@ -43,6 +45,9 @@ namespace News_Website.Models
         public ArticleCategory? Category { get; set; }
         [Display(Name="Cover Photo")]
         public virtual BlobFile CoverImage { get; set; }
+
+        [Display(Name = "Cover Photo")]
+        public virtual BlobFile DraftCoverImage { get; set; }
         [NotMapped]
         [Display(Name = "Upload New Cover Image")]
         public virtual IFormFile CoverImageUpload { get; set; }

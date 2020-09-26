@@ -164,7 +164,7 @@ namespace News_Website.Controllers
                 };
                 db.Articles.Add(a);
             }
-            a.Title = article.Title;
+            a.DraftTitle = article.Title;
             a.DraftContent = article.DraftContent;
             a.EditedOn = DateTime.UtcNow;
             a.Category = article.Category == null ? (ArticleCategory?)null : article.Category;
@@ -197,6 +197,7 @@ namespace News_Website.Controllers
             {
                 if(a.PublishedOn == null) a.PublishedOn = DateTime.UtcNow;
                 a.Content = article.DraftContent;
+                a.Title = article.Title;
                 a.OverwrittenOn = DateTime.UtcNow;
             }
 
