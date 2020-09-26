@@ -91,6 +91,7 @@ namespace News_Website.Controllers
                 return NotFound();
             }
 
+
             if(currentUser == null) //add views for non author users
             {
                 article.TotalViews++;
@@ -99,7 +100,18 @@ namespace News_Website.Controllers
             if (article.CoverImage != null) ViewData["CoverImage"] = article.CoverImage.Url;
             ViewData["Title"] = article.Title;
             ViewData["IsArticle"] = true;
-            return View(article);
+            if (article.Published)
+            {
+                return View(article);
+            }
+            if (currentUser != null && User.IsInAnyRole("SuperAdmin,Admin,Publisher,Overwriter,Editor,Viewer"))
+            {
+                return View(article);
+            }
+            else
+            {
+                return LocalRedirect($"/Identity/Account/Login?returnUrl={HttpContext.Request.Path.ToUriComponent()}");
+            }
         }
 
 
