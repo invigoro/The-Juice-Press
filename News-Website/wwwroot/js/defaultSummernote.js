@@ -7,10 +7,7 @@
         toolbar: [
             ['style', ['style']],
             ['fontoptions', ['fontname', 'fontsize']],
-            ['font', ['bold', 'italic', 'underline']],
-            ['fontstyle', ['strikethrough', 'superscript', 'subscript']],
-            ['color', ['color', 'forecolor', 'backcolor']],
-            ['clear', ['clear']],
+            ['font', ['bold', 'italic', 'underline', 'strikethrough', 'superscript', 'subscript', 'color', 'clear']],
             ['para', ['ul', 'ol', 'paragraph']],
             ['height', ['height']],
             ['insert', ['link', 'table', 'picture', 'video']],
@@ -22,6 +19,13 @@
             onChange: function (contents, $editable) {
                 $("#DraftContentEncoded").val(encodeURIComponent(contents));
             },
+            //callbacks: {
+            //    onImageLinkInsert: function (url) {
+            //        // url is the image url from the dialog
+            //        $img = $('<img>').attr({ src: url, alt: "The Juice Press" })
+            //        $summernote.summernote('insertNode', $img[0]);
+            //    }
+            //}
             //onImageUpload: function (files) {
             //    console.log(files);
             //}
@@ -41,10 +45,10 @@
             disableUpload: true // true = don't display Upload Options | Display Upload Options
         }
     });
-    $('.summernote').summernote('insertImage', url, function ($image) {
-        //$image.css('width', $image.width() / 3);
-        $image.attr('alt', 'The Juice Press');
-    });
+    //$('.summernote').summernote('insertImage', url, function ($image) {
+    //    //$image.css('width', $image.width() / 3);
+    //    $image.attr('alt', 'The Juice Press');
+    //});
 }
 
 $(function () {
