@@ -168,10 +168,10 @@ namespace News_Website.Controllers
 
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpGet]
-        public async Task<IActionResult> _EditResult(int id, int? resultid)
+        public async Task<IActionResult> _EditResult(int? id, int? quizid)
         {
-            var quiz = await db.Quizzes.FindAsync(id);
-            var result = quiz?.Results?.FirstOrDefault(x => x.Id == resultid);
+            var quiz = await db.Quizzes.FindAsync(quizid);
+            var result = quiz?.Results?.FirstOrDefault(x => x.Id == id);
             if (quiz == null)
             {
                 return NotFound();
@@ -182,6 +182,7 @@ namespace News_Website.Controllers
                 {
                     Quiz = quiz,
                     QuizId = quiz.QuizId,
+                    Id = 0,
                 };
 
             }
@@ -214,6 +215,27 @@ namespace News_Website.Controllers
                 }
                 await db.SaveChangesAsync();
             }
+            else
+            {
+                result.Title = r.Title;
+                result.Content = r.Content;
+                await db.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpDelete]
+        public async Task<IActionResult> _DeleteResult(int id)
+        {
+            var result = await db.QuizResults.FindAsync(id);
+            var quiz = result?.Quiz;
+            if (result == null) return NotFound();
+            var weights = db.AnswerResultWeights.Where(x => x.QuizResultId == id);
+            db.AnswerResultWeights.RemoveRange(weights);
+            db.QuizResults.Remove(result);
+            await db.SaveChangesAsync();
             return Ok();
         }
 

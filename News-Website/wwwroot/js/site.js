@@ -6,7 +6,7 @@ $(function () {
     $("form#main-search-bar").on("submit", function (e) {
         e.preventDefault();
         var searchString = $(this).find("input#searchString").val();
-        $(this).attr("action", "/articles/search/" + searchString);
+        $(this).attr("action", "/home/search/" + searchString);
         $(this).unbind();
         $(this).submit();
 

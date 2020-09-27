@@ -96,8 +96,9 @@
                 method: "GET",
                 url: "/Quiz/_Results/" + @Model.QuizId,
             }).done(function (data) {
-                    $("#_results-partial").html(data);
-             })
+                $("#_results-partial").html(data);
+            });
+            $(window).trigger('resize');
         }
 
         function reloadQuestions() {
@@ -106,7 +107,8 @@
                 url: "/Quiz/_Questions/" + @Model.QuizId,
             }).done(function (data) {
                     $("#_questions-partial").html(data);
-             })
+            })
+            $(window).trigger('resize');
         }
 
         $(function () {
@@ -121,11 +123,11 @@
                 let modal = $(".modal#edit-result-modal");
                 if (resultId == null || resultId == "" || resultId == "0" || resultId == 0) {
                     modal.find(".modal-title").text("Create Quiz Result");
-                    var queryUrl = "/Quiz/_EditResult/" + @Model.QuizId;
+                    var queryUrl = "/Quiz/_EditResult?id=" + 0 + "&quizid=" + @Model.QuizId;
                 }
                 else {
                     modal.find(".modal-title").text("Edit Quiz Result");
-                    var queryUrl = "/Quiz/_EditResult/" + @Model.QuizId + "?resultid=" + resultId;
+                    var queryUrl = "/Quiz/_EditResult?id=" + resultId + "&quizid=" + @Model.QuizId;
                 }
                 $.ajax({
                 method: "GET",
@@ -136,9 +138,30 @@
                 })
             })
 
+            $("body").on("click", ".delete-result", function (e) {
+                var id = $(this).data("id");
+                $("#dialog-delete-result").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            $.ajax({
+                                url: "/Quiz/_DeleteResult?id=" + id,
+                                method: "DELETE"
+                            }).done(function (data) {
+                                reloadResults();
+                            });
+                            $(this).dialog("close");
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#dialog-delete-result").dialog("open");
+
+            });
+
             $('body').on("click", ".modal#edit-result-modal input[type=submit]", function (e) {
                 e.preventDefault();
-                alert("triggered");
                 var modal = $(".modal#edit-result-modal");
                 modal.modal("hide");
                 var form = modal.find("form");
