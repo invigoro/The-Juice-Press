@@ -15,6 +15,8 @@ namespace News_Website.Models
         public string UrlShortCode { get; set; }
         [StringLength(1000)]
         public string Title { get; set; }
+        [StringLength(1000)]
+        public string DraftTitle { get; set; }
         public string Content { get; set; }
         [Display(Name = "Content")]
         public string DraftContent { get; set; }

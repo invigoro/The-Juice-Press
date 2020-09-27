@@ -152,7 +152,7 @@ namespace News_Website
             //initializing custom roles 
             var RoleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var UserManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            string[] roleNames = { "SuperAdmin", "Admin", "Publisher", "Overwriter", "Editor", "Viewer" };
+            string[] roleNames = Helpers.defaultRoles.Split(",");
             IdentityResult roleResult;
 
             foreach (var roleName in roleNames)

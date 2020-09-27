@@ -50,14 +50,14 @@ namespace News_Website.Controllers
         {
             id = id?.ToLower();
             List<Quiz> quizzes = await db.Quizzes?.ToListAsync();
-            var categories = EnumHelper<QuizCategory>.GetDisplayValues(QuizCategory.Entertainment)?.Select(x => x.ToLower());
+            //var categories = EnumHelper<QuizCategory>.GetDisplayValues(QuizCategory.Entertainment)?.Select(x => x.ToLower());
             if(id == "latest") { quizzes = quizzes.OrderByDescending(x => x.PublishedOn)?.ToList();
-                ViewBag.ResultsTitle = $"Latest News";
+                ViewBag.ResultsTitle = $"Latest Quizzes";
             }
-            else if (categories.Contains(id)) { 
-                quizzes = quizzes.Where(x => x.Category != null)?.ToList()?.Where(x => EnumHelper<QuizCategory>.GetDisplayValue((QuizCategory)x.Category).ToLower() == id)?.ToList();
-                ViewBag.ResultsTitle = $"Latest {char.ToUpper(id[0]) + id.Substring(1)}";
-            }
+            //else if (categories.Contains(id)) { 
+            //    quizzes = quizzes.Where(x => x.Category != null)?.ToList()?.Where(x => EnumHelper<QuizCategory>.GetDisplayValue((QuizCategory)x.Category).ToLower() == id)?.ToList();
+            //    ViewBag.ResultsTitle = $"Latest {char.ToUpper(id[0]) + id.Substring(1)}";
+            //}
             if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count()  > 0)) { quizzes = quizzes?.Where(x => x.Published)?.ToList(); }
             quizzes = quizzes.Take(50)?.ToList();
             return View(nameof(Index), quizzes);
@@ -92,19 +92,19 @@ namespace News_Website.Controllers
             }
 
 
-            if(currentUser == null) //add views for non author users
+            if(currentUser == null && quiz.Published) //add views for non author users
             {
                 quiz.TotalViews++;
                 await db.SaveChangesAsync();
             }
             if (quiz.CoverImage != null) ViewData["CoverImage"] = quiz.CoverImage.Url;
             ViewData["Title"] = quiz.Title;
-            ViewData["IsQuiz"] = true;
+            ViewData["IsArticle"] = true;
             if (quiz.Published)
             {
                 return View(quiz);
             }
-            if (currentUser != null && User.IsInAnyRole("SuperAdmin,Admin,Publisher,Overwriter,Editor,Viewer"))
+            if (currentUser != null && User.IsInAnyRole())
             {
                 return View(quiz);
             }
@@ -176,6 +176,7 @@ namespace News_Website.Controllers
                 };
                 db.Quizzes.Add(a);
             }
+            a.DraftTitle = quiz.Title;
             a.DraftContent = quiz.DraftContent;
             a.EditedOn = DateTime.UtcNow;
             if(quiz.DeleteCoverImage || (quiz.CoverImageUpload != null && a.CoverImage != null))

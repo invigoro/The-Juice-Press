@@ -104,7 +104,7 @@ namespace News_Website.Controllers
             {
                 return View(article);
             }
-            if (currentUser != null && User.IsInAnyRole("SuperAdmin,Admin,Publisher,Overwriter,Editor,Viewer"))
+            if (currentUser != null && User.IsInAnyRole())
             {
                 return View(article);
             }

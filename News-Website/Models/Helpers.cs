@@ -13,6 +13,7 @@ namespace News_Website.Models
     public static class Helpers
     {
         private static Random random = new Random();
+        public const string defaultRoles = "SuperAdmin,Admin,Publisher,Overwriter,Editor,Viewer";
         public static string RandomString(int length = 10, string prefix = "")
         {
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -106,7 +107,7 @@ namespace News_Website.Models
             var roles = manager.GetRolesAsync(user).Result;
             return roles.Contains(role);
         }
-        public static async Task<bool> IsInAnyRoleAsync(this UserManager<User> manager, User user, string roles)
+        public static async Task<bool> IsInAnyRoleAsync(this UserManager<User> manager, User user, string roles = Helpers.defaultRoles)
         {
             var rolesSplit = roles.Split(",");
             foreach(var r in rolesSplit)
@@ -115,7 +116,7 @@ namespace News_Website.Models
             }
             return false;
         }
-        public static bool IsInAnyRole(this UserManager<User> manager, User user, string roles)
+        public static bool IsInAnyRole(this UserManager<User> manager, User user, string roles = Helpers.defaultRoles)
         {
             var rolesSplit = roles.Split(",");
             foreach (var r in rolesSplit)
@@ -124,7 +125,7 @@ namespace News_Website.Models
             }
             return false;
         }
-        public static async Task<bool> IsInAllRolesAsync(this UserManager<User> manager, User user, string roles)
+        public static async Task<bool> IsInAllRolesAsync(this UserManager<User> manager, User user, string roles = Helpers.defaultRoles)
         {
             var rolesSplit = roles.Replace(" ", "").Split(",");
             foreach (var r in rolesSplit)
@@ -133,7 +134,7 @@ namespace News_Website.Models
             }
             return true;
         }
-        public static bool IsInAllRoles(this UserManager<User> manager, User user, string roles)
+        public static bool IsInAllRoles(this UserManager<User> manager, User user, string roles = Helpers.defaultRoles)
         {
             var rolesSplit = roles.Replace(" ", "").Split(",");
             foreach (var r in rolesSplit)
@@ -143,18 +144,18 @@ namespace News_Website.Models
             return true;
         }
 
-        public static async Task<bool> IsInRoleAsync(this UserManager<User> manager, string role)
+        public static async Task<bool> IsInRoleAsync(this UserManager<User> manager, string role = Helpers.defaultRoles)
         {
             var currentUser = await manager.GetUserAsync(System.Security.Claims.ClaimsPrincipal.Current);
             return await manager.IsInRoleAsync(currentUser, role);
         }
-        public static bool IsInRole(this UserManager<User> manager, string role)
+        public static bool IsInRole(this UserManager<User> manager, string role = Helpers.defaultRoles)
         {
             var currentUser = manager.GetUserAsync(ClaimsPrincipal.Current).Result;
             return manager.IsInRole(currentUser, role);
         }
 
-        public static bool IsInAllRoles(this ClaimsPrincipal claim, string roles)
+        public static bool IsInAllRoles(this ClaimsPrincipal claim, string roles = Helpers.defaultRoles)
         {
             var rolesSplit = roles.Replace(" ", "").Split(",");
             foreach (var r in rolesSplit)
@@ -163,7 +164,7 @@ namespace News_Website.Models
             }
             return true;
         }
-        public static bool IsInAnyRole(this ClaimsPrincipal claim, string roles)
+        public static bool IsInAnyRole(this ClaimsPrincipal claim, string roles = Helpers.defaultRoles)
         {
             var rolesSplit = roles.Replace(" ", "").Split(",");
             foreach (var r in rolesSplit)
@@ -172,6 +173,7 @@ namespace News_Website.Models
             }
             return false;
         }
+
     }
 
     public static class EnumHelper<T>
