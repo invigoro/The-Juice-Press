@@ -22,9 +22,15 @@
                         <button type="button" class="btn btn-light edit-question mr-3" data-id="@item.Id" title="Edit"><i class="fas fa-edit"></i></button>
                         <button type="button" class="btn btn-light delete-question" data-id="@item.Id" title="Delete"><i class="fas fa-times text-danger"></i></button>
                     </div>
+
+                    <div class="col-12">
+                        <h5>@item.Question</h5>
+                    </div>
                 </div>
-                <div class="col-12">
-                    <h5>@item.Question</h5>
+                <div class="row">
+                    <div class="col-12 question-answers-container" data-question-id="@item.Id">
+                        @await Html.PartialAsync("_Answers", item)
+                    </div>
                 </div>
             </div>
 

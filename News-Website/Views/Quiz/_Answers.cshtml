@@ -1,0 +1,31 @@
+﻿@model News_Website.Models.QuizQuestion
+@{ 
+    Layout = null;
+}
+<div class="row">
+    <div class="col"><h5>Answers</h5></div>
+    <div class="col-auto"><button type="button" class='btn btn-success edit-answer' data-question-id="@Model.Id">Add Answer <i class="fas fa-plus"></i></button></div>
+</div>
+@if (Model?.Answers?.Count() > 0)
+{
+<div class="row">
+    @foreach (var item in Model.Answers)
+    {
+        <div class="col-12 mt-2 mb-2" data-id="@item.Id">
+
+            <div class="p-2 mt-2 mb-2 h-100 bg-info border-light rounded">
+                <div class="row">
+                    <div class="col">
+                        @item.Answer
+                    </div>
+                    <div class="col-auto">
+                        <button type="button" class="btn btn-light edit-answer mr-3" data-id="@item.Id" data-question-id="@Model.Id" title="Edit"><i class="fas fa-edit"></i></button>
+                        <button type="button" class="btn btn-light delete-answer" data-id="@item.Id" data-question-id="@Model.Id" title="Delete"><i class="fas fa-times text-danger"></i></button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    }
+</div>
+}

@@ -115,6 +115,35 @@ namespace News_Website.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> SubmitQuiz(QuizResponseViewModel response)
+        {
+            var quiz = db.Quizzes.Find(response.QuizId);
+            if (quiz == null) return NotFound();
+            var result = quiz.GetResult(response);
+            string sessionId;
+            try
+            {
+                sessionId = HttpContext?.Session?.Id;
+            }
+            catch(Exception e)
+            {
+                sessionId = "";
+            }
+            var saveResponse = new QuizResponse
+            {
+                User = currentUser == null ? null : currentUser,
+                SessionId = sessionId,
+                QuizId = quiz.QuizId,
+                QuizResultId = result?.Id ?? 0,
+            };
+            db.QuizResponses.Add(saveResponse);
+            await db.SaveChangesAsync();
+            return View("_QuizResult", result);
+               
+        }
+
+
         // GET: Quizzes/Edit/5
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         public async Task<IActionResult> Edit(int? id)
@@ -164,6 +193,15 @@ namespace News_Website.Controllers
             }
 
             return View(quiz);
+        }
+
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        public async Task<IActionResult> _Answers(int id)
+        {
+            var question = db.QuizQuestions?.Find(id);
+            if (question == null) return NotFound();
+            else return View(question);
         }
 
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
@@ -244,6 +282,87 @@ namespace News_Website.Controllers
             await db.SaveChangesAsync();
             return Ok();
         }
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpGet]
+        public async Task<IActionResult> _EditAnswer(int? id, int? questionid)
+        {
+            var answer = db.QuizQuestionAnswers?.Find(id);
+            var question = db.QuizQuestions?.Find(questionid);
+            if(question == null || question?.Quiz == null)
+            {
+                return NotFound();
+            }
+
+            var model = new AnswerViewModel
+            {
+                QuizId = question.QuizId,
+                QuestionId = question.Id,
+            };
+            if (answer != null) { 
+                model.Answer = answer.Answer;
+                model.Id = answer.Id;
+                model.Weights = answer.AnswerWeights?.Select(x => new AnswerWeightViewModel
+                {
+                    Weight = x.Weight,
+                    ResultId = x.QuizResultId,
+                    ResultTitle = x.QuizResult.Title
+                })?.ToList() ?? new List<AnswerWeightViewModel>();
+            }
+            else
+            {
+                model.Weights = question.Quiz.Results?.Select(x => new AnswerWeightViewModel
+                {
+                    Weight = 0,
+                    ResultId = x.Id,
+                    ResultTitle = x.Title
+                })?.ToList() ?? new List<AnswerWeightViewModel>();
+            }
+            return View(model);
+        }
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> _EditAnswer(AnswerViewModel a)
+        {
+            var ans = await db.QuizQuestionAnswers.FindAsync(a.Id);
+            var question = await db.QuizQuestions.FindAsync(a.QuestionId);
+            var quiz = await db.Quizzes.FindAsync(a.QuizId);
+            if (question == null || quiz == null) return NotFound();
+
+            if(ans == null)
+            {
+                ans = new QuizQuestionAnswer
+                {
+                    Question = question,
+                    QuizQuestionId = question.Id,
+                    Answer = a.Answer,
+                };
+                db.QuizQuestionAnswers.Add(ans);
+                await db.SaveChangesAsync();
+                var AnswerWeights = a.Weights?.Select(x => new AnswerResultWeight
+                {
+                    Weight = x.Weight,
+                    QuizResultId = x.ResultId,
+                    QuizQuestionAnswer = ans,
+                    QuizQuestionAnswerId = ans.Id
+                })?.ToList();
+                db.AnswerResultWeights.AddRange(AnswerWeights);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                ans.Answer = a.Answer;
+                foreach(var w in a.Weights ?? new List<AnswerWeightViewModel>())
+                {
+                    var res = ans.AnswerWeights.Find(x => x.QuizResultId == w.ResultId);
+                    if (res != null) res.Weight = w.Weight;
+                }
+                await db.SaveChangesAsync();
+            }
+
+            return Ok();
+        }
+
 
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpGet]
@@ -318,13 +437,26 @@ namespace News_Website.Controllers
             return Ok();
         }
 
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpDelete]
+        public async Task<IActionResult> _DeleteAnswer(int id)
+        {
+            var answer = await db.QuizQuestionAnswers.FindAsync(id);
+            if (answer == null) return NotFound();
+            var weights = db.AnswerResultWeights.Where(x => x.QuizQuestionAnswerId == id);
+            db.AnswerResultWeights.RemoveRange(weights);
+            db.QuizQuestionAnswers.Remove(answer);
+            await db.SaveChangesAsync();
+            return Ok();
+        }
+
         // POST: Quizzes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("QuizId,Title,DraftTitle,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,DeleteCoverImage,ToPublish,FromAjax")] Quiz quiz)
+        public async Task<IActionResult> Edit(int id, [Bind("QuizId,Title,DraftTitle,RandomQuestionOrder,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,DeleteCoverImage,ToPublish,FromAjax")] Quiz quiz)
         {
 
             var a = await db.Quizzes.FindAsync(quiz.QuizId);
@@ -380,7 +512,10 @@ namespace News_Website.Controllers
 
 
             a.Published = await _userManager.IsInAnyRoleAsync(currentUser, "Publisher")/*roles.Contains("SuperAdmin") || roles.Contains("Admin") */? quiz.Published : a.Published;
-            
+            if (User.IsInRole("Publisher"))
+            {
+                a.RandomQuestionOrder = quiz.RandomQuestionOrder;
+            }
             if(quiz.ToPublish && User.IsInRole("Overwriter"))
             {
                 if(a.PublishedOn == null) a.PublishedOn = DateTime.UtcNow;

@@ -1,0 +1,11 @@
+﻿@model News_Website.Models.QuizResult
+@{ 
+    Layout = null;
+}
+<h1>@Model.Title</h1>
+<p>@Model.Content</p>
+<div class="row d-flex flex-row justify-content-center">
+    <div class="col-auto">
+        <a asp-action="details" asp-controller="quiz" asp-route-id="@Model.QuizId" class="text-center btn btn-success">Take Quiz Again <i class="fas fa-sync-alt"></i></a>
+    </div>
+</div>

@@ -39,7 +39,8 @@ namespace News_Website.Models
         public virtual List<QuizResult> Results { get; set; }
         public virtual List<QuizQuestion> Questions { get; set; }
         public virtual List<QuizResponse> Responses { get; set; }
-
+        [Display(Name = "Randomize Question Order")]
+        public bool RandomQuestionOrder { get; set; }
         public QuizResult GetResult(QuizResponseViewModel response)
         {
             var results = new Dictionary<QuizResult, decimal>();
@@ -117,7 +118,7 @@ namespace News_Website.Models
         public int QuizResultId { get; set; }
         public virtual QuizResult QuizResult { get; set; }
         [Range(0, 100)]
-        public decimal Weight { get; set; }
+        public int Weight { get; set; } = 0;
     }
 
     public class QuizBlobFile
@@ -137,22 +138,39 @@ namespace News_Website.Models
         public bool IsPrimaryAuthor { get; set; } = false;
     }
 
+    public class AnswerViewModel
+    {
+        public int Id { get; set; }
+        public int QuestionId { get; set; }
+        public int QuizId { get; set; }
+        [Display(Name = "Answer")]
+        [StringLength(2000)]
+        public string Answer { get; set; }
+        public List<AnswerWeightViewModel> Weights { get; set; }
+    }
+    public class AnswerWeightViewModel
+    {
+        public int ResultId { get; set; }
+        [Range(0, 100)]
+        public int Weight { get; set; } = 0;
+        public string ResultTitle { get; set; }
+    }
+
     public class QuizResponse
     {
         public int Id { get; set; }
         public string SessionId { get; set; }
         public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
         public int QuizId { get; set; }
-        public virtual Quiz Quiz {get;set;}
         public int QuizResultId { get; set; }
-        public virtual QuizResult QuizResult { get; set; }
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
         public virtual User User { get; set; }
     }
 
     public class QuizResponseViewModel
     {
-         public List<QuizQuestionResponseViewModel> Answers { get; set; }
+        public int QuizId { get; set; }
+        public List<QuizQuestionResponseViewModel> Answers { get; set; }
     }
     public class QuizQuestionResponseViewModel
     {

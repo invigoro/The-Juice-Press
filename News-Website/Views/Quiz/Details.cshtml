@@ -1,24 +1,26 @@
 ﻿@model News_Website.Models.Quiz
+@{
+    ViewData["Title"] = "Quiz";
+}
 
-
-    <div class="row">
-        <div class="col">
-            <h1 class="text-justify">@Html.DisplayFor(x => x.Title)</h1>
-        </div>
-        @if (User?.IsInRole("Editor") == true || User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
-        {
-            <div class="col-auto">
-                <a asp-action="Edit" asp-route-id="@Model.QuizId" class="btn btn-light"><i class="fas fa-edit"></i></a>
-            </div>
-        }
-    </div>
 <div class="row">
+    <div class="col">
+        <h1 class="text-justify">@Html.DisplayFor(x => x.Title)</h1>
+    </div>
+    @if (User?.IsInRole("Editor") == true || User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
+    {
+        <div class="col-auto">
+            <a asp-action="Edit" asp-route-id="@Model.QuizId" class="btn btn-light"><i class="fas fa-edit"></i></a>
+        </div>
+    }
+</div>
+<div class="row mt-2">
     <div class="col-auto">
-        @if(Model.Published && Model.PublishedOn != null)
+        @if (Model.Published && Model.PublishedOn != null)
         {
 
-        <div class="h6 text-dark">@Helpers.FormattedDaysAgo(Model.PublishedOn.Value)</div>
-        
+            <div class="h6 text-dark">@Helpers.FormattedDaysAgo(Model.PublishedOn.Value)</div>
+
         }
     </div>
     <div class="col">
@@ -28,15 +30,109 @@
         <partial name="/Views/Shared/_ShareButtons.cshtml" />
     </div>
 </div>
-@if (Model.CoverImage != null) {
-<div class="row mt-3">
-    <div class="col d-flex flex-column align-content-center">
-        <img src="@Model.CoverImage.Url" class="img-fluid d-inline-block m-auto" />
+@if (Model.CoverImage != null)
+{
+    <div class="row mt-3">
+        <div class="col d-flex flex-column align-content-center">
+            <img src="@Model.CoverImage.Url" class="img-fluid d-inline-block m-auto" />
+        </div>
     </div>
-</div>
 }
 <div class="row mt-3 border-top pt-3">
     <div class="col">
         @Html.Raw(Model.Content)
     </div>
 </div>
+
+<form id="quiz-form" class="row mt-3 pt-3" action="/Quiz/SubmitQuiz/@Model.QuizId" method="post">
+    @if (Model.Questions?.Count() > 0)
+    {
+        foreach (var q in Model.Questions)
+        {
+            <div class="col-12 mt-4 mb-4 p-4 bg-light border-light rounded">
+                <h3>@q.Question</h3>
+                <div class="row">
+                    @if (q.Answers?.Count() > 0)
+                    {
+                        foreach (var a in q.Answers)
+                        {
+                            <div class="col-12 col-lg-6 quiz-option">
+                                <input type="radio" id="answer-@a.Id" name="@q.Id" value="@a.Id" required /><label for="answer-@a.Id">@a.Answer</label>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12"><p>Looks like this question doesn't have any options. Sorry about that!</p></div>
+                    }
+                </div>
+            </div>
+        }
+
+        <div class="col-12 mt-4 d-flex flex-row justify-content-center" id="submit-container">
+            <input type="submit" value="See My Results" disabled class="btn btn-success text-center" />
+        </div>
+    }
+    else
+    {
+        <div class="col-12">
+            <p>Looks like there are no questions yet for this quiz. Please check again later!</p>
+        </div>
+    }
+</form>
+
+<div class="row mt-4">
+
+    <div class="col-12 mt-4 p-5 border" id="results-container">
+
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(function () {
+            $("body").on("input", "input[type='radio']", function (e) {
+            var data = $.map($("form#quiz-form input:radio:checked"), function(elem, idx) {
+                   return {
+                        QuizQuestionId: $(elem).attr("name"),
+                        QuizQuestionAnswerId: $(elem).val()
+                    };
+            });
+            if (data.length >= @(Model.Questions?.Count() ?? 0)) {
+                $('html, body').animate({
+                    scrollTop: $("#submit-container").offset().top
+                }, 2000);
+                $("form#quiz-form").find("input[type=submit]").attr("disabled", false);
+            }
+            else {
+                $("form#quiz-form").find("input[type=submit]").attr("disabled", true);
+            }
+
+        })
+
+
+            $("#submit-container").on("click", function (e) {
+                e.preventDefault();
+                var data = $.map($("form#quiz-form input:radio:checked"), function(elem, idx) {
+                    return {
+                        QuizQuestionId: $(elem).attr("name"),
+                        QuizQuestionAnswerId: $(elem).val()
+                    };
+                });
+                var model = {};
+                model.Answers = data;
+                model.QuizId = @Model.QuizId;
+                $.ajax({
+                    method: "POST",
+                    url: "/Quiz/SubmitQuiz/" + @Model.QuizId,
+                    data: model,
+
+                }).done(function (response){
+                    $("form#quiz-form, #submit-container").hide();
+                    $("#results-container").html(response);
+                })
+            })
+        })
+
+    </script>
+}
