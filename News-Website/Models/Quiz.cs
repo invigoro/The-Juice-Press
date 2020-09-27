@@ -88,6 +88,7 @@ namespace News_Website.Models
         public virtual Quiz Quiz { get; set; }
         [StringLength(1000)]
         public string Title { get; set; }
+        public virtual List<AnswerResultWeight> ResultWeights { get; set; }
 
     }
 

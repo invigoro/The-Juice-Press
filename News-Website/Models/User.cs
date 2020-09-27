@@ -22,6 +22,7 @@ namespace News_Website.Models
         [PersonalData]
         public string LastName { get; set; }
         public virtual List<ArticleAuthor> Articles { get; set; }
+        public virtual List<QuizAuthor> Quizzes { get; set; }
         [Display(Name = "Profile Image")]
         public virtual BlobFile ProfileImage { get; set; }
         [NotMapped]
