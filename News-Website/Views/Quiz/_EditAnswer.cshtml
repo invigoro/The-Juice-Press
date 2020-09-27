@@ -19,20 +19,29 @@
         </div>
         <div class="row">
             <div class="col-12">
-                <h6>Result weights for this answer</h6>
+                <h5>Result weights for this answer (0-100)</h5>
+                <p class="text-small font-italic">Result weights determine how much each answer for this question will push towards each result. Weights can range from 0-100, with a higher value meaning that the answer is more weighted toward that result.</p>
             </div>
         </div>
         @if (Model.Weights?.Count() > 0)
         {
+            <div class="row my-3 font-weight-bold text-center">
+                <div class="col">
+                    Result
+                </div>
+                <div class="col">
+                    Weight
+                </div>
+            </div>
             foreach (var w in Model.Weights)
             {
-                <div class="row weight-row" data-id="@w.ResultId">
+                <div class="row weight-row border-bottom my-2 py-2" data-id="@w.ResultId">
                     <div class="col">
-                        @w.ResultTitle
+                        <p>@w.ResultTitle</p>
                     </div>
-                    <div class="col-auto answer-weight-editor-column">
-                        @Html.LabelFor(x => w.Weight)
-                        @Html.TextBoxFor(x => w.Weight, htmlAttributes: new { @class = "answer-weight-editor form-control" })
+                    <div class="col-auto answer-weight-editor-column form-inline">
+                        @*@Html.LabelFor(x => w.Weight, htmlAttributes: new { @class = "mr-2" })*@
+                        @Html.TextBoxFor(x => w.Weight, htmlAttributes: new { @class = "ml-2 answer-weight-editor form-control" })
                         @Html.ValidationMessageFor(x => w.Weight)
                     </div>
                     @*<div class="col-auto">
