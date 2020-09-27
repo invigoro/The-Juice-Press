@@ -8,24 +8,12 @@ using System.Threading.Tasks;
 
 namespace News_Website.Models
 {
-    public class Article
+    public class Article : AContent
     {
         public int ArticleId { get; set; }
         [StringLength(10)]
         public string UrlShortCode { get; set; }
-        [StringLength(1000)]
-        public string Title { get; set; }
-        [StringLength(1000)]
-        public string DraftTitle { get; set; }
-        public string Content { get; set; }
-        [Display(Name = "Content")]
-        public string DraftContent { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-        public DateTime EditedOn { get; set; } = DateTime.UtcNow;
-        public DateTime? PublishedOn { get; set; }
-        public DateTime? OverwrittenOn { get; set; }
-        [Display(Name="Publicly Viewable")]
-        public bool Published { get; set; } = false;
+        
         [NotMapped]
         public User PrimaryAuthor
         {
@@ -39,12 +27,9 @@ namespace News_Website.Models
         [NotMapped]
         public bool FromAjax { get; set; }
         public virtual List<ArticleAuthor> ArticleAuthors { get; set; }
-        public int TotalViews { get; set; } = 0;
         [NotMapped]
         public string DraftContentEncoded { get; set; }
         public ArticleCategory? Category { get; set; }
-        [Display(Name="Cover Photo")]
-        public virtual BlobFile CoverImage { get; set; }
 
         [Display(Name = "Cover Photo")]
         public virtual BlobFile DraftCoverImage { get; set; }

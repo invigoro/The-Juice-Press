@@ -3,18 +3,24 @@
 @{
     ViewData["Title"] = "Articles";
 }
-<div class="row">
-    <div class="col">
-        <h1>@Html.Raw((string)ViewBag.ResultsTitle)</h1>
-    </div>
-    @if (User?.IsInRole("Editor") == true || User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
-    {
-        <div class="col-auto">
-            <a asp-action="Edit" class="btn btn-success"><i class="fas fa-plus"></i> New Article</a>
+    <div class="row">
+        <div class="col">
+            <h1>@Html.Raw((string)ViewBag.ResultsTitle)</h1>
         </div>
-    }
+        <div class="col-auto">
+            <form class="form-inline my-2 my-lg-0 small" asp-action="search" asp-controller="quiz" id="main-search-bar">
+                <input class="form-control mr-sm-2" type="search" placeholder="Find a quiz" aria-label="Search" id="searchString">
+                <button class="btn btn-outline-dark" type="submit"><i class="fas fa-lg fa-search" title="Search"></i></button>
+            </form>
+        </div>
+        @if (User?.IsInRole("Editor") == true || User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
+        {
+            <div class="col-auto">
+                <a asp-action="Edit" class="btn btn-success"><i class="fas fa-plus"></i> New Quiz</a>
+            </div>
+        }
 
-</div>
+    </div>
 
 
 

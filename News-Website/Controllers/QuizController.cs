@@ -141,6 +141,82 @@ namespace News_Website.Controllers
             return View(quiz);
         }
 
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        public async Task<IActionResult> _Results(int id)
+        {
+            var quiz = await db.Quizzes.FindAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+
+            return View(quiz);
+        }
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        public async Task<IActionResult> _Questions(int id)
+        {
+            var quiz = await db.Quizzes.FindAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+
+            return View(quiz);
+        }
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpGet]
+        public async Task<IActionResult> _EditResult(int id, int? resultid)
+        {
+            var quiz = await db.Quizzes.FindAsync(id);
+            var result = quiz?.Results?.FirstOrDefault(x => x.Id == resultid);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            if(result == null)
+            {
+                result = new QuizResult
+                {
+                    Quiz = quiz,
+                    QuizId = quiz.QuizId,
+                };
+
+            }
+            return View(result);
+        }
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> _EditResult(QuizResult r)
+        {
+            var quiz = await db.Quizzes.FindAsync(r.QuizId);
+            var result = quiz?.Results?.FirstOrDefault(x => x.Id == r.Id);
+            if(quiz == null)
+            {
+                return NotFound();
+            }
+            if (result == null)
+            {
+                await db.QuizResults.AddAsync(r);
+                await db.SaveChangesAsync();
+                foreach(var a in quiz.Questions?.SelectMany(x => x.Answers)?.ToList() ?? new List<QuizQuestionAnswer>())
+                {
+                    await db.AnswerResultWeights.AddAsync(new AnswerResultWeight
+                    {
+                        QuizQuestionAnswerId = a.Id,
+                        QuizQuestionAnswer = a,
+                        QuizResultId = r.Id,
+                        QuizResult = r,
+                        Weight = 50,
+                    });
+                }
+                await db.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
         // POST: Quizzes/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.

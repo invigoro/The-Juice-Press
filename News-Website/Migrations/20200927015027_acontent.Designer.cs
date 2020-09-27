@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using News_Website.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace News_Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200927015027_acontent")]
+    partial class acontent
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -464,10 +466,6 @@ namespace News_Website.Migrations
                         .HasColumnType("integer")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("Content")
-                        .HasColumnType("character varying(5000)")
-                        .HasMaxLength(5000);
-
                     b.Property<int?>("QuizId")
                         .HasColumnType("integer");
 
@@ -725,7 +723,7 @@ namespace News_Website.Migrations
             modelBuilder.Entity("News_Website.Models.QuizResponse", b =>
                 {
                     b.HasOne("News_Website.Models.Quiz", "Quiz")
-                        .WithMany("Responses")
+                        .WithMany()
                         .HasForeignKey("QuizId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -744,7 +742,7 @@ namespace News_Website.Migrations
             modelBuilder.Entity("News_Website.Models.QuizResult", b =>
                 {
                     b.HasOne("News_Website.Models.Quiz", "Quiz")
-                        .WithMany("Results")
+                        .WithMany("QuizResults")
                         .HasForeignKey("QuizId");
                 });
 

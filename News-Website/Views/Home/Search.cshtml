@@ -1,0 +1,61 @@
+﻿@model IEnumerable<News_Website.Models.AContent>
+
+@{
+    ViewData["Title"] = "Search Results";
+}
+<div class="row">
+    <div class="col">
+        <h1>@Html.Raw((string)ViewBag.ResultsTitle)</h1>
+    </div>
+    @*<div class="col-auto">
+        <form class="form-inline my-2 my-lg-0 small" asp-action="search" asp-controller="articles" id="main-search-bar">
+            <input class="form-control mr-sm-2" type="search" placeholder="Find an article" aria-label="Search" id="searchString">
+            <button class="btn btn-outline-dark" type="submit"><i class="fas fa-lg fa-search" title="Search"></i></button>
+        </form>
+    </div>*@
+    @*@if (User?.IsInRole("Editor") == true || User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
+    {
+        <div class="col-auto">
+            <a asp-action="Edit" class="btn btn-success"><i class="fas fa-plus"></i> New Article</a>
+        </div>
+    }*@
+
+</div>
+
+
+
+@if (Model?.Count() > 0)
+{
+    foreach (var a in Model)
+    {
+        int aId = 0;
+        string route = "";
+        if (a is Article art) { aId = art.ArticleId; route = "Articles"; }
+        else if (a is Quiz q) { aId = q.QuizId; route = "Quiz"; }
+
+    <a asp-controller="Articles" asp-action="Details" asp-route-id="@aId" class="article-link">
+    <div class="row mt-4 mb-4 pb-2 border-bottom">
+        @if (a.CoverImage != null)
+        {
+            <div class="col-12 col-sm-8 order-12 order-sm-0">
+
+                <h2>@(a.Title)@(a.Published ? "" : " (Draft)")</h2>
+                <div class="overflow-hidden text-only" style="max-height: 3em; line-height: 1.5rem;">@Html.Raw(a.Content)</div>
+            </div>
+
+            <div class="col-12 col-sm-4 order-0 order-sm-12 d-flex flex-row justify-content-center justify-content-sm-end align-content-center">
+                <img src="@a.CoverImage.Url" class="img-fluid" style="max-height: 7rem;" />
+            </div>
+        }
+        else
+        {
+            <div class="col-12">
+
+                <h2>@(a.Title)@(a.Published ? "" : " (Draft)")</h2>
+                <div class="overflow-hidden text-only" style="max-height: 3em; line-height: 1.5rem;">@Html.Raw(a.Content)</div>
+            </div>
+        }
+    </div>
+</a>
+    }
+}

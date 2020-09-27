@@ -41,6 +41,30 @@ namespace News_Website.Controllers
 
             return View(articles);
         }
+
+        public async Task<IActionResult> Search(string id)
+        {
+            var searchWords = id?.ToLower()?.Split(" ");
+            var articles = db.Articles?.ToList();
+            if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count() > 0)) { articles = articles?.Where(x => x.Published)?.ToList(); }
+            if (!String.IsNullOrEmpty(id) && searchWords?.Count() > 0)
+            {
+                articles = articles.Where(x => x.Title.ToLower().ContainsAll(searchWords))?.ToList();
+            }
+            var quizzes = db.Quizzes?.ToList();
+            if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count() > 0)) { quizzes = quizzes?.Where(x => x.Published)?.ToList(); }
+            if (!String.IsNullOrEmpty(id) && searchWords?.Count() > 0)
+            {
+                quizzes = quizzes.Where(x => x.Title.ToLower().ContainsAll(searchWords))?.ToList();
+            }
+            ViewBag.ResultsTitle = $"Search results for <i>{id}</i>";
+
+            List<AContent> AllContent = new List<AContent>();
+            AllContent.AddRange(articles);
+            AllContent.AddRange(quizzes);
+            AllContent = AllContent.OrderByDescending(x => x.PublishedOn)?.ToList();
+            return View(AllContent);
+        }
         public IActionResult TermsOfUse()
         {
             return View();

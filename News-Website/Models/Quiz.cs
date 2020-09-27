@@ -8,24 +8,11 @@ using System.Threading.Tasks;
 
 namespace News_Website.Models
 {
-    public class Quiz
+    public class Quiz : AContent
     {
         public int QuizId { get; set; }
         [StringLength(10)]
         public string UrlShortCode { get; set; }
-        [StringLength(1000)]
-        public string Title { get; set; }
-        [StringLength(1000)]
-        public string DraftTitle { get; set; }
-        public string Content { get; set; }
-        [Display(Name = "Content")]
-        public string DraftContent { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
-        public DateTime EditedOn { get; set; } = DateTime.UtcNow;
-        public DateTime? PublishedOn { get; set; }
-        public DateTime? OverwrittenOn { get; set; }
-        [Display(Name = "Publicly Viewable")]
-        public bool Published { get; set; } = false;
         [NotMapped]
         public User PrimaryAuthor
         {
@@ -39,12 +26,8 @@ namespace News_Website.Models
         [NotMapped]
         public bool FromAjax { get; set; }
         public virtual List<QuizAuthor> QuizAuthors { get; set; }
-        public int TotalViews { get; set; } = 0;
         [NotMapped]
         public string DraftContentEncoded { get; set; }
-        public ArticleCategory? Category { get; set; }
-        [Display(Name = "Cover Photo")]
-        public virtual BlobFile CoverImage { get; set; }
         [NotMapped]
         [Display(Name = "Upload New Cover Image")]
         public virtual IFormFile CoverImageUpload { get; set; }
@@ -53,8 +36,9 @@ namespace News_Website.Models
         public List<int> CurrentBlobFiles { get; set; }
         [NotMapped]
         public bool DeleteCoverImage { get; set; } = false;
-        public virtual List<QuizResult> QuizResults { get; set; }
+        public virtual List<QuizResult> Results { get; set; }
         public virtual List<QuizQuestion> Questions { get; set; }
+        public virtual List<QuizResponse> Responses { get; set; }
 
         public QuizResult GetResult(QuizResponseViewModel response)
         {
@@ -65,8 +49,8 @@ namespace News_Website.Models
                 var answer = question?.Answers?.Find(x => x.Id == a.QuizQuestionAnswerId);
                 if (question == null
                     || answer == null
-                    || answer?.AnswerWeights?.Count() != this.QuizResults?.Count()
-                    || !(this.QuizResults?.Count() > 0))
+                    || answer?.AnswerWeights?.Count() != this.Results?.Count()
+                    || !(this.Results?.Count() > 0))
                 {
                     return null;
                 }
@@ -88,8 +72,12 @@ namespace News_Website.Models
     {
         public int Id { get; set; }
         public virtual Quiz Quiz { get; set; }
+        public int QuizId { get; set; }
         [StringLength(1000)]
         public string Title { get; set; }
+        [StringLength(5000)]
+        [Display(Name = "Explanation of Result")]
+        public string Content { get; set; }
         public virtual List<AnswerResultWeight> ResultWeights { get; set; }
 
     }
@@ -103,6 +91,7 @@ namespace News_Website.Models
         public int Id { get; set; }
         public int Order { get; set; }
         public virtual Quiz Quiz { get; set; }
+        public int QuizId { get; set; }
         [StringLength(2000)]
         public string Question { get; set; }
         public virtual List<QuizQuestionAnswer> Answers { get; set; }
@@ -112,6 +101,7 @@ namespace News_Website.Models
     {
         public int Id { get; set; }
         public virtual QuizQuestion Question { get; set; }
+        public int QuizQuestionId { get; set; }
         public virtual List<AnswerResultWeight> AnswerWeights { get; set; }
     }
 
@@ -121,6 +111,7 @@ namespace News_Website.Models
         public virtual QuizQuestionAnswer QuizQuestionAnswer { get; set; }
         public int QuizResultId { get; set; }
         public virtual QuizResult QuizResult { get; set; }
+        [Range(0, 100)]
         public decimal Weight { get; set; }
     }
 
