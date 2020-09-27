@@ -1,0 +1,68 @@
+﻿@model News_Website.Models.Quiz
+
+@{
+    Layout = null;
+}
+
+        <form asp-action="Edit" class="row" id="edit-article" enctype="multipart/form-data">
+            <div class="col-12">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="QuizId" />
+                <div class="form-group">
+                    <label asp-for="Title" class="control-label"></label>
+                    <input asp-for="Title" class="form-control" />
+                    <span asp-validation-for="Title" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Category" class="control-label"></label>
+                    <select asp-for="Category" asp-items='(Html.GetEnumSelectList<ArticleCategory>()?.Prepend(new SelectListItem {Value = "", Text = "None"}))'>
+                    </select>
+                    <span asp-validation-for="Category" class="text-danger"></span>
+                </div>
+                @if (Model.CoverImage != null)
+                {
+                    <div class="form-group" id="current-cover-image">
+                        <div class="row">
+                            <div class="col-auto">
+                                <div>Current Cover Image: </div>
+                            </div>
+                            <div class="col-auto"><img class="img-thumbnail" style="max-height: 50px; max-width: 70px" src="@Model.CoverImage.Url" /></div>
+                            <div class="col-auto"><i class="fas fa-times text-danger" id="delete-cover-image"></i></div>
+                        </div>
+
+                    </div>
+                }
+                <div class="form-group">
+                    <label asp-for="CoverImageUpload" class="control-label"></label>
+                    <input asp-for="CoverImageUpload" type="file" class="form-control" />
+                    <span asp-validation-for="CoverImageUpload" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DraftContent" class="control-label"></label>
+                    <textarea asp-for="DraftContent" class="form-control summernote"></textarea>
+                    <span asp-validation-for="DraftContent" class="text-danger"></span>
+                </div>
+                <input type="hidden" asp-for="DraftContentEncoded" />
+                @if (User?.IsInRole("Publisher") == true || User?.IsInRole("SuperAdmin") == true)
+                {
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
+                        </label>
+                    </div>
+                }
+                <input type="hidden" asp-for="ToPublish" />
+                <input type="hidden" asp-for="FromAjax" />
+                <input type="hidden" asp-for="DeleteCoverImage" />
+
+                <div class="form-group float-right">
+                    <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2 submit-button">Save Draft</button>
+                    <button type="button" id="save-draft-and-close" class="btn btn-primary ml-2 mr-2 submit-button">Save Draft & Close</button>
+                    @if (User?.IsInRole("Overwriter") == true)
+                    {
+                    <button type="button" id="save-and-publish" class="btn btn-warning ml-2 mr-2 submit-button" title="Note: this will not make it viewable.">Save & Publish</button>
+                    <button type="button" id="save-publish-and-close" class="btn btn-warning ml-2 mr-2 submit-button" title="Note: this will not make it viewable.">Save, Publish, & Close</button>
+                    }
+                </div>
+            </div>
+        </form>

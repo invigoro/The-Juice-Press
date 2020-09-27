@@ -1,0 +1,42 @@
+﻿@model News_Website.Models.Quiz
+
+
+    <div class="row">
+        <div class="col">
+            <h1 class="text-justify">@Html.DisplayFor(x => x.Title)</h1>
+        </div>
+        @if (User?.IsInRole("Editor") == true || User?.IsInRole("Admin") == true || User?.IsInRole("SuperAdmin") == true)
+        {
+            <div class="col-auto">
+                <a asp-action="Edit" asp-route-id="@Model.QuizId" class="btn btn-light"><i class="fas fa-edit"></i></a>
+            </div>
+        }
+    </div>
+<div class="row">
+    <div class="col-auto">
+        @if(Model.Published && Model.PublishedOn != null)
+        {
+
+        <div class="h6 text-dark">@Helpers.FormattedDaysAgo(Model.PublishedOn.Value)</div>
+        
+        }
+    </div>
+    <div class="col">
+        <div class="h6 text-dark">By @Model.PrimaryAuthor?.DisplayName</div>
+    </div>
+    <div class="col-auto">
+        <partial name="/Views/Shared/_ShareButtons.cshtml" />
+    </div>
+</div>
+@if (Model.CoverImage != null) {
+<div class="row mt-3">
+    <div class="col d-flex flex-column align-content-center">
+        <img src="@Model.CoverImage.Url" class="img-fluid d-inline-block m-auto" />
+    </div>
+</div>
+}
+<div class="row mt-3 border-top pt-3">
+    <div class="col">
+        @Html.Raw(Model.Content)
+    </div>
+</div>

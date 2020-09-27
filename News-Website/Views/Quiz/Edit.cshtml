@@ -1,0 +1,195 @@
+﻿@model News_Website.Models.Quiz
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h4>Edit Quiz</h4>
+
+<hr />
+<div class="row">
+    <div class="col-md-12" id="_edit-partial">
+        @await Html.PartialAsync("_Edit", Model)
+        @*<form asp-action="Edit" class="row" id="edit-quiz">
+                <div class="col-12">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="QuizId" />
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DraftContent" class="control-label"></label>
+                        <textarea asp-for="DraftContent" class="form-control summernote"></textarea>
+                        <span asp-validation-for="DraftContent" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="DraftContentEncoded" />
+                    <div class="form-group form-check">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Published" /> @Html.DisplayNameFor(model => model.Published)
+                        </label>
+                    </div>
+                    <input type="hidden" asp-for="ToPublish" />
+
+                    <div class="form-group float-right">
+                        <input type="submit" value="Save Draft & Close" class="btn btn-primary ml-2 mr-2" />
+                        <button type="button" id="save-draft" class="btn btn-primary ml-2 mr-2">Save Draft</button>
+                        <button type="button" id="save-and-publish" class="btn btn-primary ml-2 mr-2" title="Note: this will not make it viewable.">Save & Publish</button>
+                    </div>
+                </div>
+            </form>*@
+    </div>
+</div>
+
+<div id="dialog" title="Confirmation Required">
+    Are you sure you want to remove this cover image?
+</div>
+
+<div class="row d-flex flex-row justify-content-between mt-4">
+    @if (Model.QuizId != null && Model.QuizId != 0 && User.IsInAnyRole("SystemAdmin,Admin"))
+    {
+    <a asp-action="Delete" asp-route-id="@Model.QuizId" class="btn btn-danger">Delete Quiz</a>
+    }
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript" src="~/js/defaultSummernote.js"></script>
+    <script>
+        const formName = "form#edit-quiz";
+
+        function uploadImages() {
+
+        }
+
+
+        $(function () {
+
+            $("#dialog").dialog({
+                autoOpen: false,
+                modal: true
+            });
+
+            $("body").on("click", "#delete-cover-image", function (e) {
+
+                $("#dialog").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            $("input#DeleteCoverImage").val("true");
+                            $("#current-cover-image").remove();
+                            $(this).dialog("close");
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#dialog").dialog("open");
+            })
+            $(".body").on("click", ".submit-button", function (e) {
+                $(".submit-button").attr("disabled", true);
+                $('this').val("Working...");
+                $('this').text("Working...");
+            });
+            $("body").on("click", "#save-draft-and-close", function (e) {
+                e.preventDefault();
+                $("input#ToPublish").val("false");
+                $("input#FromAjax").val("false");
+                $(formName).submit();
+            });
+            $("body").on("click", "#save-publish-and-close", function (e) {
+                e.preventDefault();
+                $("input#ToPublish").val("true");
+                $("input#FromAjax").val("false");
+                $(formName).submit();
+            });
+            $("body").on("click", "#save-draft", function (e) {
+                e.preventDefault();
+                $("input#ToPublish").val("false");
+                $("input#FromAjax").val("true");
+                var form = $(formName);
+                if (form.valid()) {
+                    var action = form.attr("action");
+                    //form = form.serialize();
+                    form = new FormData(document.getElementById("edit-quiz"));
+                    $.ajax({
+                        method: "POST",
+                        url: action,
+                        data: form,
+                        dataType: "JSON",
+                        processData: false,
+                        contentType: false,
+                    }).done(function (data) {
+                        var newUrl = "/Quiz/_Edit/" + data.id;
+
+                        $.ajax({
+                            method: "GET",
+                            url: newUrl,
+                        })
+                            .done(function (data) {
+                                $("#_edit-partial").html(data);
+                                defaultSummerNote();
+                                var save = $("#save-draft");
+
+                                $(".submit-button").attr("disabled", false);
+                                save.toggleClass("btn-primary btn-secondary");
+                                save.html("<i class='fas fa-check'></i> Draft Saved!");
+                                setTimeout(function () {
+                                    save.toggleClass("btn-primary btn-secondary");
+                                    save.html("Save Draft");
+                                }, 4000);
+                            })
+                        //$("#_edit-partial").load({
+                        //    url: newUrl, complete: function (e) {
+
+                        //    }
+                        //});
+
+                    });
+
+                }
+            });
+
+            $("body").on("click", "#save-and-publish", function (e) {
+                e.preventDefault();
+                $("input#ToPublish").val("true");
+                $("input#FromAjax").val("true");
+                var form = $(formName);
+                if (form.valid()) {
+                    var action = form.attr("action");
+                    //form = form.serialize();
+                    form = new FormData(document.getElementById("edit-quiz"));
+                    $.ajax({
+                        method: "POST",
+                        url: action,
+                        data: form,
+                        dataType: "JSON",
+                        processData: false,
+                        contentType: false,
+                    }).done(function (data) {
+                        var newUrl = "/Quiz/_Edit/" + data.id;
+
+                        $.ajax({
+                            method: "GET",
+                            url: newUrl,
+                        })
+                            .done(function (data) {
+                                $("#_edit-partial").html(data);
+                                defaultSummerNote();
+                                var save = $("#save-and-publish");
+                                $(".submit-button").attr("disabled", false);
+                                save.toggleClass("btn-warning btn-secondary");
+                                save.html("<i class='fas fa-check'></i> Saved and Published!");
+                                setTimeout(function () {
+                                    save.toggleClass("btn-warning btn-secondary");
+                                    save.html("Save & Publish");
+                                }, 4000);
+                            });
+                    });
+
+                }
+            })
+        })
+    </script>
+}
