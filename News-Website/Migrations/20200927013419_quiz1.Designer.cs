@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using News_Website.Data;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
@@ -9,9 +10,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace News_Website.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200927013419_quiz1")]
+    partial class quiz1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -424,39 +426,6 @@ namespace News_Website.Migrations
                     b.ToTable("QuizQuestionAnswers");
                 });
 
-            modelBuilder.Entity("News_Website.Models.QuizResponse", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
-
-                    b.Property<int>("QuizId")
-                        .HasColumnType("integer");
-
-                    b.Property<int>("QuizResultId")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("SessionId")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime>("TimeStamp")
-                        .HasColumnType("timestamp without time zone");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("QuizId");
-
-                    b.HasIndex("QuizResultId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuizResponses");
-                });
-
             modelBuilder.Entity("News_Website.Models.QuizResult", b =>
                 {
                     b.Property<int>("Id")
@@ -716,25 +685,6 @@ namespace News_Website.Migrations
                     b.HasOne("News_Website.Models.QuizQuestion", "Question")
                         .WithMany("Answers")
                         .HasForeignKey("QuestionId");
-                });
-
-            modelBuilder.Entity("News_Website.Models.QuizResponse", b =>
-                {
-                    b.HasOne("News_Website.Models.Quiz", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("News_Website.Models.QuizResult", "QuizResult")
-                        .WithMany()
-                        .HasForeignKey("QuizResultId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("News_Website.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("News_Website.Models.QuizResult", b =>

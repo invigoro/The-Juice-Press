@@ -25,6 +25,8 @@ namespace News_Website.Data
         public DbSet<QuizQuestionAnswer> QuizQuestionAnswers { get; set; }
         public DbSet<AnswerResultWeight> AnswerResultWeights { get; set; }
 
+        public DbSet<QuizResponse> QuizResponses { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);

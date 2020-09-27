@@ -72,9 +72,9 @@ namespace News_Website.Models
                 }
                 foreach (var w in answer.AnswerWeights)
                 {
-                    if(!results.ContainsKey(w.QuizResult))
+                    if (!results.ContainsKey(w.QuizResult))
                     {
-                        results[w.QuizResult ] = 0;
+                        results[w.QuizResult] = 0;
                     }
                     results[w.QuizResult] += w.Weight;
                 }
@@ -107,7 +107,7 @@ namespace News_Website.Models
         public string Question { get; set; }
         public virtual List<QuizQuestionAnswer> Answers { get; set; }
     }
-    
+
     public class QuizQuestionAnswer
     {
         public int Id { get; set; }
@@ -118,7 +118,7 @@ namespace News_Website.Models
     public class AnswerResultWeight
     {
         public int QuizQuestionAnswerId { get; set; }
-        public virtual QuizQuestionAnswer QuizQuestionAnswer {get;set;}
+        public virtual QuizQuestionAnswer QuizQuestionAnswer { get; set; }
         public int QuizResultId { get; set; }
         public virtual QuizResult QuizResult { get; set; }
         public decimal Weight { get; set; }
@@ -139,6 +139,19 @@ namespace News_Website.Models
         public virtual User User { get; set; }
         public string UserId { get; set; }
         public bool IsPrimaryAuthor { get; set; } = false;
+    }
+
+    public class QuizResponse
+    {
+        public int Id { get; set; }
+        public string SessionId { get; set; }
+        public DateTime TimeStamp { get; set; } = DateTime.UtcNow;
+        public int QuizId { get; set; }
+        public virtual Quiz Quiz {get;set;}
+        public int QuizResultId { get; set; }
+        public virtual QuizResult QuizResult { get; set; }
+        public string UserId { get; set; }
+        public virtual User User { get; set; }
     }
 
     public class QuizResponseViewModel
