@@ -21,6 +21,8 @@
             </div>
         </div>
     </div>
+    @if (Model.QuizId != null && Model.QuizId != 0)
+    {
     <div class="tab-pane fade" id="edit-results" role="tabpanel" aria-labelledby="edit-results-tab">
         <div class="row mt-4 pt-4">
             <div class="col-md-12" id="_results-partial">
@@ -35,6 +37,7 @@
             </div>
         </div>
     </div>
+    }
 </div>
 
 
@@ -97,8 +100,8 @@
                 url: "/Quiz/_Results/" + @Model.QuizId,
             }).done(function (data) {
                 $("#_results-partial").html(data);
+                $(window).trigger('resize');
             });
-            $(window).trigger('resize');
         }
 
         function reloadQuestions() {
@@ -106,12 +109,38 @@
                 method: "GET",
                 url: "/Quiz/_Questions/" + @Model.QuizId,
             }).done(function (data) {
-                    $("#_questions-partial").html(data);
+                $("#_questions-partial").html(data);
+                sortableQuestions();
+                $(window).trigger('resize');
             })
-            $(window).trigger('resize');
+        }
+
+        function sortableQuestions() {
+            $("#sortable-list").sortable({
+                    revert: true,
+                    update: function (event, ui) {
+                        var listitems = $("#sortable-list").find("li");
+                        var data = {};
+                        $.each(listitems, function (i, element) {
+                            data['[' + i + '].Key'] = $(element).data("id");
+                            data['[' + i + '].Value'] = i;
+                        });
+                        console.log(data);
+                        $.ajax({
+                            url: "/Quiz/EditQuestionOrder?id=" + @Model.QuizId,
+                            data: data,
+                            method: "POST",
+                            success: function (e) {
+                                reloadQuestions();
+                            }
+                        });
+                    }
+                });
         }
 
         $(function () {
+
+            sortableQuestions();
 
             $("#dialog-delete-cover-image, #dialog-delete-question, #dialog-delete-result").dialog({
                 autoOpen: false,
@@ -137,6 +166,62 @@
                     modal.modal("show");
                 })
             })
+
+            $("body").on("click", ".edit-question", function (e) {
+                var resultId = $(this).data("id");
+                let modal = $(".modal#edit-question-modal");
+                if (resultId == null || resultId == "" || resultId == "0" || resultId == 0) {
+                    modal.find(".modal-title").text("Create Question");
+                    var queryUrl = "/Quiz/_EditQuestion?id=" + 0 + "&quizid=" + @Model.QuizId;
+                }
+                else {
+                    modal.find(".modal-title").text("Edit Question");
+                    var queryUrl = "/Quiz/_EditQuestion?id=" + resultId + "&quizid=" + @Model.QuizId;
+                }
+                $.ajax({
+                method: "GET",
+                url: queryUrl,
+                }).done(function (data) {
+                    modal.find(".modal-body").html(data);
+                    modal.modal("show");
+                })
+            })
+            $("body").on("click", ".delete-question", function (e) {
+                var id = $(this).data("id");
+                $("#dialog-delete-question").dialog({
+                    buttons: {
+                        "Confirm": function () {
+                            $.ajax({
+                                url: "/Quiz/_DeleteQuestion?id=" + id,
+                                method: "DELETE"
+                            }).done(function (data) {
+                                reloadQuestions();
+                            });
+                            $(this).dialog("close");
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    }
+                });
+                $("#dialog-delete-question").dialog("open");
+
+            });
+
+            $('body').on("click", ".modal#edit-question-modal input[type=submit]", function (e) {
+                e.preventDefault();
+                var modal = $(".modal#edit-question-modal");
+                modal.modal("hide");
+                var form = modal.find("form");
+                var serial = form.serialize();
+                $.ajax({
+                    url: "/Quiz/_EditQuestion",
+                    method: "POST",
+                    data: serial,
+                }).done(function (data) {
+                    reloadQuestions();
+                });
+            });
 
             $("body").on("click", ".delete-result", function (e) {
                 var id = $(this).data("id");

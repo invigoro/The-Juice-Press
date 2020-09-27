@@ -168,6 +168,85 @@ namespace News_Website.Controllers
 
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpGet]
+        public async Task<IActionResult> _EditQuestion(int? id, int? quizid)
+        {
+            var quiz = await db.Quizzes.FindAsync(quizid);
+            var question = quiz?.Questions?.FirstOrDefault(x => x.Id == id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            if (question == null)
+            {
+                question = new QuizQuestion
+                {
+                    Quiz = quiz,
+                    QuizId = quiz.QuizId,
+                    Id = 0,
+                };
+
+            }
+            return View(question);
+        }
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> _EditQuestion(QuizQuestion q)
+        {
+            var quiz = await db.Quizzes.FindAsync(q.QuizId);
+            var question = quiz?.Questions?.FirstOrDefault(x => x.Id == q.Id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            if (question == null)
+            {
+                q.Order = quiz.Questions?.Count() ?? 0;
+                await db.QuizQuestions.AddAsync(q);
+                await db.SaveChangesAsync();
+            }
+            else
+            {
+                question.Question = q.Question;
+                await db.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpDelete]
+        public async Task<IActionResult> _DeleteQuestion(int id)
+        {
+            var question = await db.QuizQuestions.FindAsync(id);
+            var quiz = question?.Quiz;
+            if (question == null) return NotFound();
+            var answers = question.Answers;
+            var answerweights = question.Answers?.SelectMany(x => x.AnswerWeights);
+            if(answerweights != null) db.AnswerResultWeights.RemoveRange(answerweights);
+            if(answers != null) db.QuizQuestionAnswers.RemoveRange(answers);
+            db.QuizQuestions.Remove(question);
+            await db.SaveChangesAsync();
+            return Ok();
+        }
+
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpPost]
+        public async Task<IActionResult> EditQuestionOrder(int id, Dictionary<int, int> order)
+        {
+            var quiz = await db.Quizzes.FindAsync(id);
+            if (quiz == null) return NotFound();
+            foreach(var q in order)
+            {
+                var question = quiz.Questions?.FirstOrDefault(x => x.Id == q.Key);
+                question.Order = q.Value;
+            }
+            await db.SaveChangesAsync();
+            return Ok();
+        }
+
+        [Authorize(Roles = "Editor, Admin, SuperAdmin")]
+        [HttpGet]
         public async Task<IActionResult> _EditResult(int? id, int? quizid)
         {
             var quiz = await db.Quizzes.FindAsync(quizid);

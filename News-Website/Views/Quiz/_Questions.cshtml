@@ -1,16 +1,19 @@
 ﻿@model News_Website.Models.Quiz
+@{ 
+    Layout = null;
+}
 <div class="row">
     <div class="col"><h3>Questions</h3></div>
     <div class="col-auto"><button type="button" class='btn btn-primary edit-question'>Add New <i class="fas fa-plus"></i></button></div>
 </div>
 @if (Model?.Questions?.Count() > 0)
 {
-<div class="row">
-    @foreach (var item in Model.Questions)
+<ul id="sortable-list" class="row">
+    @foreach (var item in Model.Questions?.OrderBy(x => x.Order))
     {
-        <div class="col-12">
+        <li class="col-12 mt-4 mb-4" style="list-style: none;" data-id="@item.Id">
 
-            <div class="p-4 mt-4 mb-4 h-100 bg-info rounded">
+            <div class="p-4 mt-4 mb-4 h-100 bg-light border-light rounded">
                 <div class="row">
                     <div class="col">
                         <h3>@(item.Order + 1).</h3>
@@ -21,11 +24,11 @@
                     </div>
                 </div>
                 <div class="col-12">
-                    <h6>@item.Question</h6>
+                    <h5>@item.Question</h5>
                 </div>
             </div>
 
-        </div>
+        </li>
     }
-</div>
+</ul>
 }

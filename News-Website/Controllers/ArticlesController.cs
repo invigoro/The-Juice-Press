@@ -70,7 +70,7 @@ namespace News_Website.Controllers
             if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count() > 0)) { articles = articles?.Where(x => x.Published)?.ToList(); }
             if (!String.IsNullOrEmpty(id) && searchWords?.Count() > 0)
             {
-                articles = articles.Where(x => x.Title.ToLower().ContainsAll(searchWords))?.ToList();
+                articles = articles.Where(x => !String.IsNullOrEmpty(x.Title) && x.Title.ToLower().ContainsAll(searchWords))?.ToList();
             }
             ViewBag.ResultsTitle = $"Search results for <i>{id}</i>";
             return View(nameof(Index), articles);
