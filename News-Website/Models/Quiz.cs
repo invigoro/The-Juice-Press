@@ -105,6 +105,9 @@ namespace News_Website.Models
         public virtual QuizQuestion Question { get; set; }
         public int QuizQuestionId { get; set; }
         public virtual List<AnswerResultWeight> AnswerWeights { get; set; }
+
+        [StringLength(2000)]
+        public string Answer { get; set; }
     }
 
     public class AnswerResultWeight
