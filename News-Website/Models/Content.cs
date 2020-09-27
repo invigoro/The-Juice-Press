@@ -11,6 +11,7 @@ namespace News_Website.Models
         [StringLength(1000)]
         public string Title { get; set; }
         [StringLength(1000)]
+        [Display(Name = "Title")]
         public string DraftTitle { get; set; }
         public string Content { get; set; }
         [Display(Name = "Content")]

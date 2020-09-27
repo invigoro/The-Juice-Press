@@ -70,7 +70,7 @@ namespace News_Website.Controllers
             if (currentUser == null || !((await _userManager.GetRolesAsync(currentUser))?.Count() > 0)) { quizzes = quizzes?.Where(x => x.Published)?.ToList(); }
             if (!String.IsNullOrEmpty(id) && searchWords?.Count() > 0)
             {
-                quizzes = quizzes.Where(x => x.Title.ToLower().ContainsAll(searchWords))?.ToList();
+                quizzes = quizzes.Where(x => !String.IsNullOrEmpty(x.Title) && x.Title.ToLower().ContainsAll(searchWords))?.ToList();
             }
             ViewBag.ResultsTitle = $"Search results for <i>{id}</i>";
             return View(nameof(Index), quizzes);
@@ -245,7 +245,7 @@ namespace News_Website.Controllers
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("QuizId,Title,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,DeleteCoverImage,ToPublish,FromAjax")] Quiz quiz)
+        public async Task<IActionResult> Edit(int id, [Bind("QuizId,Title,DraftTitle,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,DeleteCoverImage,ToPublish,FromAjax")] Quiz quiz)
         {
 
             var a = await db.Quizzes.FindAsync(quiz.QuizId);
@@ -274,7 +274,7 @@ namespace News_Website.Controllers
                 };
                 db.Quizzes.Add(a);
             }
-            a.DraftTitle = quiz.Title;
+            a.DraftTitle = quiz.DraftTitle;
             a.DraftContent = quiz.DraftContent;
             a.EditedOn = DateTime.UtcNow;
             if(quiz.DeleteCoverImage || (quiz.CoverImageUpload != null && a.CoverImage != null))
@@ -306,7 +306,7 @@ namespace News_Website.Controllers
             {
                 if(a.PublishedOn == null) a.PublishedOn = DateTime.UtcNow;
                 a.Content = quiz.DraftContent;
-                a.Title = quiz.Title;
+                a.Title = quiz.DraftTitle;
                 a.OverwrittenOn = DateTime.UtcNow;
             }
 
@@ -391,6 +391,14 @@ namespace News_Website.Controllers
         //    quiz.CoverImage = await _blobStorage.UploadFileToBlobAsync(quiz.CoverImageUpload, fileNameForStorage);
         //    await db.SaveChangesAsync();
         //}
+
+
+        private async Task<BlobFile> UploadBlobFile(IFormFile file, string title)
+        {
+            string fileNameForStorage = FormFileName(title, file.FileName);
+            return await _cloudStorage.UploadFileToBlobAsync(file, fileNameForStorage);
+        }
+
 
         private async Task UploadFile(Quiz quiz)
         {

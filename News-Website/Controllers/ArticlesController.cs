@@ -147,7 +147,7 @@ namespace News_Website.Controllers
         [Authorize(Roles = "Editor, Admin, SuperAdmin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,DeleteCoverImage,ToPublish,FromAjax")] Article article)
+        public async Task<IActionResult> Edit(int id, [Bind("ArticleId,Title,DraftTitle,Category,Content,DraftContent,CreatedOn,EditedOn,PublishedOn,Published,CoverImageUpload,DeleteCoverImage,ToPublish,FromAjax")] Article article)
         {
 
             var a = await db.Articles.FindAsync(article.ArticleId);
@@ -176,7 +176,7 @@ namespace News_Website.Controllers
                 };
                 db.Articles.Add(a);
             }
-            a.DraftTitle = article.Title;
+            a.DraftTitle = article.DraftTitle;
             a.DraftContent = article.DraftContent;
             a.EditedOn = DateTime.UtcNow;
             a.Category = article.Category == null ? (ArticleCategory?)null : article.Category;
@@ -209,7 +209,7 @@ namespace News_Website.Controllers
             {
                 if(a.PublishedOn == null) a.PublishedOn = DateTime.UtcNow;
                 a.Content = article.DraftContent;
-                a.Title = article.Title;
+                a.Title = article.DraftTitle;
                 a.OverwrittenOn = DateTime.UtcNow;
             }
 

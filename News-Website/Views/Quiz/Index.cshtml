@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<News_Website.Models.Quiz>
 
 @{
-    ViewData["Title"] = "Articles";
+    ViewData["Title"] = "Quizzes";
 }
     <div class="row">
         <div class="col">
@@ -46,7 +46,7 @@
         {
             <div class="col-12">
 
-                <h2>@(a.Title)@(a.Published ? "" : " (Draft)")</h2>
+                <h2>@(a.Published ? a.Title : a.DraftTitle + " (Draft)")</h2>
                 <div class="overflow-hidden text-only" style="max-height: 3em; line-height: 1.5rem;">@Html.Raw(a.Content)</div>
             </div>
         }

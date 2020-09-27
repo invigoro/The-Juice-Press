@@ -84,8 +84,10 @@ namespace News_Website.Models
 
     public class QuizQuestion
     {
-        public QuizQuestion()
+        public QuizQuestion() { }
+        public QuizQuestion(Quiz quiz)
         {
+            Quiz = quiz;
             Order = Quiz?.Questions?.Count() ?? 0;
         }
         public int Id { get; set; }

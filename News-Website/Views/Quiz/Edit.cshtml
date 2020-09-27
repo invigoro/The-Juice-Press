@@ -225,6 +225,10 @@
                         processData: false,
                         contentType: false,
                     }).done(function (data) {
+                        
+                        if (@Model.QuizId == 0 || @Model.QuizId == "0") {
+                            window.location.href = "/Quiz/Edit/" + data.id;
+                        }
                         var newUrl = "/Quiz/_Edit/" + data.id;
 
                         $.ajax({
@@ -272,6 +276,9 @@
                         processData: false,
                         contentType: false,
                     }).done(function (data) {
+                        if (@Model.QuizId == 0 || @Model.QuizId == "0") {
+                            window.location.href = "/Quiz/Edit/" + data.id;
+                        }
                         var newUrl = "/Quiz/_Edit/" + data.id;
 
                         $.ajax({
