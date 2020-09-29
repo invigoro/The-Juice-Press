@@ -47,14 +47,14 @@
 <form id="quiz-form" class="row mt-3 pt-3" action="/Quiz/SubmitQuiz/@Model.QuizId" method="post">
     @if (Model.Questions?.Count() > 0)
     {
-        foreach (var q in (Model.RandomQuestionOrder ? Model.Questions : Model.Questions.OrderBy(x => x.Order).ToList()))
+        foreach (var q in (Model.RandomQuestionOrder ? Model.Questions.Shuffle().ToList() : Model.Questions.OrderBy(x => x.Order).ToList()))
         {
             <div class="col-12 mt-4 mb-4 p-4 bg-light border-light rounded">
                 <h3>@q.Question</h3>
                 <div class="row">
                     @if (q.Answers?.Count() > 0)
                     {
-                        foreach (var a in q.Answers)
+                        foreach (var a in q.Answers.Shuffle())
                         {
                             <div class="col-12 p-3 col-lg-6 quiz-option">
                                 <input type="radio" id="answer-@a.Id" name="@q.Id" value="@a.Id" required /><label class="w-100 h-100" for="answer-@a.Id">@a.Answer</label>

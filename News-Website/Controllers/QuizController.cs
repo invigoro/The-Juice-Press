@@ -408,7 +408,7 @@ namespace News_Website.Controllers
                         QuizQuestionAnswer = a,
                         QuizResultId = r.Id,
                         QuizResult = r,
-                        Weight = 50,
+                        Weight = 0,
                     });
                 }
                 await db.SaveChangesAsync();
