@@ -11,8 +11,6 @@ namespace News_Website.Models
     public class Quiz : AContent
     {
         public int QuizId { get; set; }
-        [StringLength(10)]
-        public string UrlShortCode { get; set; }
         [NotMapped]
         public User PrimaryAuthor
         {

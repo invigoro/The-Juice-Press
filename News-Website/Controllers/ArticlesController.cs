@@ -77,15 +77,34 @@ namespace News_Website.Controllers
         }
 
         // GET: Articles/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet("articles/read/{id}")]
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
+            int Id;
+            var validId = Int32.TryParse(id, out Id);
+            if(!validId)
+            {
+                try
+                {
+                    id = id?.Trim()?.Split("-")?.Last()?.Trim()?.ToUpper() ?? "";
+                    Id = (await db.Articles
+                        .FirstOrDefaultAsync(x => id == x.UrlShortCode))?
+                        .ArticleId ?? 0;
+
+                }catch(Exception e)
+                {
+                    return NotFound();
+                }
+            }
+
+
             var article = await db.Articles
-                .FirstOrDefaultAsync(m => m.ArticleId == id);
+                .FirstOrDefaultAsync(m => m.ArticleId == Id);
             if (article == null)
             {
                 return NotFound();

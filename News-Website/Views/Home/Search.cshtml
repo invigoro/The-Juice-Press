@@ -28,12 +28,8 @@
 {
     foreach (var a in Model)
     {
-        int aId = 0;
-        string route = "";
-        if (a is Article art) { aId = art.ArticleId; route = "Articles"; }
-        else if (a is Quiz q) { aId = q.QuizId; route = "Quiz"; }
 
-    <a asp-controller="Articles" asp-action="Details" asp-route-id="@aId" class="article-link">
+    <a asp-controller="Articles" asp-action="Details" asp-route-id="@a.UrlTitle()" class="article-link">
     <div class="row mt-4 mb-4 pb-2 border-bottom">
         @if (a.CoverImage != null)
         {

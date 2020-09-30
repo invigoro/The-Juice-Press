@@ -77,15 +77,34 @@ namespace News_Website.Controllers
         }
 
         // GET: Quizzes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpGet("quiz/view/{id}")]
+        public async Task<IActionResult> Details(string id)
         {
-            if (id == null)
+            if (String.IsNullOrEmpty(id))
             {
                 return NotFound();
             }
 
+            int Id;
+            var validId = Int32.TryParse(id, out Id);
+            if (!validId)
+            {
+                try
+                {
+                    id = id?.Trim()?.Split("-")?.Last()?.Trim()?.ToUpper() ?? "";
+                    Id = (await db.Quizzes
+                        .FirstOrDefaultAsync(x => id == x.UrlShortCode))?
+                        .QuizId ?? 0;
+
+                }
+                catch (Exception e)
+                {
+                    return NotFound();
+                }
+            }
+
             var quiz = await db.Quizzes
-                .FirstOrDefaultAsync(m => m.QuizId == id);
+                .FirstOrDefaultAsync(m => m.QuizId == Id);
             if (quiz == null)
             {
                 return NotFound();

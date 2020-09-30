@@ -11,8 +11,6 @@ namespace News_Website.Models
     public class Article : AContent
     {
         public int ArticleId { get; set; }
-        [StringLength(10)]
-        public string UrlShortCode { get; set; }
         
         [NotMapped]
         public User PrimaryAuthor

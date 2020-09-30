@@ -28,7 +28,7 @@
 {
     foreach (var a in Model)
     {
-<a asp-controller="Articles" asp-action="Details" asp-route-id="@a.ArticleId" class="article-link">
+<a asp-controller="Articles" asp-action="Details" asp-route-id="@a.UrlTitle()" class="article-link">
     <div class="row mt-4 mb-4 pb-2 border-bottom">
         @if (a.CoverImage != null)
         {
