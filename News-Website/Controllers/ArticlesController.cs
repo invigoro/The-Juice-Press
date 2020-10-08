@@ -316,7 +316,7 @@ namespace News_Website.Controllers
 
         private async Task UploadFile(Article article)
         {
-            string fileNameForStorage = FormFileName(article.Title, article.CoverImageUpload.FileName);
+            string fileNameForStorage = FormFileName(article.Title ?? article.DraftTitle, article.CoverImageUpload.FileName);
             article.CoverImage = await _cloudStorage.UploadFileToBlobAsync(article.CoverImageUpload, fileNameForStorage);
             await db.SaveChangesAsync();
         }
