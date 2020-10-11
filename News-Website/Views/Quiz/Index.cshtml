@@ -34,7 +34,7 @@
         {
             <div class="col-12 col-sm-8 order-12 order-sm-0">
 
-                <h2>@(a.Published ? a.Title : a.DraftTitle + " (Draft)")</h2>
+                <h2>@Html.Raw(a.Published ? a.Title : a.DraftTitle + " (Not Public)")</h2>
                 <div class="overflow-hidden text-only" style="max-height: 3em; line-height: 1.5rem;">@Html.Raw(a.Content)</div>
             </div>
 
@@ -46,7 +46,7 @@
         {
             <div class="col-12">
 
-                <h2>@(a.Published ? a.Title : a.DraftTitle + " (Draft)")</h2>
+                <h2>@Html.Raw(a.Published ? a.Title : a.DraftTitle + " (Not Public)")</h2>
                 <div class="overflow-hidden text-only" style="max-height: 3em; line-height: 1.5rem;">@Html.Raw(a.Content)</div>
             </div>
         }
