@@ -24,22 +24,41 @@ namespace News_Website.Controllers
 
         public IActionResult Index(string id)
         {
+            List<AContent> AllContent = new List<AContent>();
             if (!String.IsNullOrEmpty(id))
             {
                 id = id.ToUpper();
-                var article = db.Articles?.FirstOrDefault(x => x.UrlShortCode == id && x.Published);
+                var article = db.Articles?.FirstOrDefault(x => x.UrlShortCode == id);
                 if(article != null)
                 {
                     return RedirectToAction("Details", "Articles", new { id = article.ArticleId });
                 }
+                var quiz = db.Quizzes?.FirstOrDefault(x => x.UrlShortCode == id);
+                if(quiz != null)
+                {
+                    return RedirectToAction("Details", "Quiz", new { id = quiz.QuizId });
+                }
             }
             var articles = db.Articles?.Where(x => x.Published && x.PublishedOn != null)?
                 .OrderByDescending(x => x.PublishedOn)?
-                .Take(10)
-                .OrderByDescending(x => x.TotalViews)?
+                .Take(12)?
+                //.OrderByDescending(x => x.TotalViews)?
+                .ToList() ?? new List<Article>() ;
+
+            var quizzes = db.Quizzes?.Where(x => x.Published && x.PublishedOn != null)?
+                .OrderByDescending(x => x.PublishedOn)?
+                .Take(12)?
+                .ToList() ?? new List<Quiz>();
+
+            AllContent.AddRange(articles);
+            AllContent.AddRange(quizzes);
+
+            AllContent = AllContent.OrderByDescending(x => x.PublishedOn)?
+                .Take(12)?
+                .Shuffle()?
                 .ToList();
 
-            return View(articles);
+            return View(AllContent);
         }
 
         public async Task<IActionResult> Search(string id)
