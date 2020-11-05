@@ -11,78 +11,83 @@
 
 @if (Model?.Count() > 0)
 {
-<div class="row">
-    @{
-        //var headline = Model.FirstOrDefault(x => x.CoverImage != null);
-        var headlines = Model.Where(x => x.CoverImage != null)?.Take((int)Math.Ceiling(Model.Count() / (decimal)articlesPerBlock)) ?? new List<AContent>();
-        var remainder = Model.ToList();
-    }
-    @if (headlines?.Count() > 0)
-    {
-        //remainder.Remove(headline);
-        remainder = remainder.Where(x => !headlines.Contains(x))?.ToList() ?? new List<AContent>();
-        var remainderIndex = 0;
-        for (int i = 0; i < headlines.Count(); i++)
+    <div class="row">
+        @{
+            //var headline = Model.FirstOrDefault(x => x.CoverImage != null);
+            var headlines = Model.Where(x => x.CoverImage != null)?.Take((int)Math.Ceiling(Model.Count() / (decimal)articlesPerBlock)) ?? new List<AContent>();
+            var remainder = Model.ToList();
+        }
+        @if (headlines?.Count() > 0)
         {
-            var headline = headlines.ElementAt(i);
-            var iseven = i % 2 == 0;
-            <div class="col-12 col-lg-6 @(!iseven ? "order-lg-1" : "order-lg-0")">
-                <div class="row mb-3 pb-3 border-bottom">
-                    <div class="col">
-                        <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@headline.UrlTitle()">
-                            <img src="@headline.CoverImage.Url" class="img-fluid d-block mx-auto mb-3" style="max-height: 300px;" />
-                            <div class="h2 text-justify">@(headline.GetType() == typeof(Quiz) ? "Quiz - " : "")@headline.Title</div>
-                            <div class="overflow-hidden text-only" style="max-height: 6rem; line-height: 1.5rem;">@Html.Raw(headline.Content)</div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6 @(iseven ? "order-lg-1" : "order-lg-0")">
-                @for (int j = remainderIndex; j < remainder.Count() && j < remainderIndex + (articlesPerBlock - 1); j++)
+            //remainder.Remove(headline);
+            remainder = remainder.Where(x => !headlines.Contains(x))?.ToList() ?? new List<AContent>
+                ();
+            var remainderIndex = 0;
+            <div class="col">
+                @for (int i = 0; i < headlines.Count(); i++)
                 {
-                    var r = remainder.ElementAt(j);
+                    var headline = headlines.ElementAt(i);
+                    var iseven = i % 2 == 0;
+                    <div class="row">
+                        <div class="col-12 col-lg-6 @(!iseven ? "order-lg-1" : "order-lg-0")">
+                            <div class="row mb-3 pb-3 border-bottom">
+                                <div class="col">
+                                    <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@headline.UrlTitle()">
+                                        <img src="@headline.CoverImage.Url" class="img-fluid d-block mx-auto mb-3" style="max-height: 300px;" />
+                                        <div class="h2 text-justify">@(typeof(Quiz).IsInstanceOfType(headline) ? "Quiz - " : "")@headline.Title</div>
+                                        <div class="overflow-hidden text-only" style="max-height: 6rem; line-height: 1.5rem;">@Html.Raw(headline.Content)</div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-6 @(iseven ? "order-lg-1" : "order-lg-0")">
+                            @for (int j = remainderIndex; j < remainder.Count() && j < remainderIndex + (articlesPerBlock - 1); j++)
+                            {
+                                var r = remainder.ElementAt(j);
+                                <div class="row mb-3 pb-3 border-bottom">
+                                    <div class="col">
+                                        <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@r.UrlTitle()">
+                                            <div class="h2 text-justify">@(typeof(Quiz).IsInstanceOfType(r) ? "Quiz - " : "")@r.Title</div>
+                                            <div class="overflow-hidden text-only" style="max-height: 3rem; line-height: 1.5rem;">@Html.Raw(r.Content)</div>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                            @{remainderIndex += (articlesPerBlock - 1);}
+                        </div>
+                    </div>
+                }
+            </div>
+            @*<div class="col-12 col-lg-6">
+                    <div class="row mb-3 pb-3 border-bottom">
+                        <div class="col">
+                            <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@headline.UrlTitle()">
+                                <img src="@headline.CoverImage.Url" class="img-fluid d-block mx-auto mb-3" style="max-height: 300px;" />
+                                <div class="h2 text-justify">@(headline.GetType() == typeof(Quiz) ? "Quiz - " : "")@headline.Title</div>
+                                <div class="overflow-hidden text-only" style="max-height: 6rem; line-height: 1.5rem;">@Html.Raw(headline.Content)</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>*@
+
+        }
+        else if (remainder?.Count() > 0)
+        {
+            <div class="col-12 col-lg-6">
+                @foreach (var r in remainder)
+                {
                     <div class="row mb-3 pb-3 border-bottom">
                         <div class="col">
                             <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@r.UrlTitle()">
-                                <div class="h2 text-justify">@(r.GetType() == typeof(Quiz) ? "Quiz - " : "")@r.Title</div>
+                                <div class="h2 text-justify">@(typeof(Quiz).IsInstanceOfType(r) ? "Quiz - " : "")@r.Title</div>
                                 <div class="overflow-hidden text-only" style="max-height: 3rem; line-height: 1.5rem;">@Html.Raw(r.Content)</div>
                             </a>
                         </div>
                     </div>
                 }
-                @{remainderIndex += (articlesPerBlock - 1);}
             </div>
         }
-        @*<div class="col-12 col-lg-6">
-                <div class="row mb-3 pb-3 border-bottom">
-                    <div class="col">
-                        <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@headline.UrlTitle()">
-                            <img src="@headline.CoverImage.Url" class="img-fluid d-block mx-auto mb-3" style="max-height: 300px;" />
-                            <div class="h2 text-justify">@(headline.GetType() == typeof(Quiz) ? "Quiz - " : "")@headline.Title</div>
-                            <div class="overflow-hidden text-only" style="max-height: 6rem; line-height: 1.5rem;">@Html.Raw(headline.Content)</div>
-                        </a>
-                    </div>
-                </div>
-            </div>*@
-
-    }
-    else if (remainder?.Count() > 0)
-    {
-        <div class="col-12 col-lg-6">
-            @foreach (var r in remainder)
-            {
-                <div class="row mb-3 pb-3 border-bottom">
-                    <div class="col">
-                        <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@r.UrlTitle()">
-                            <div class="h2 text-justify">@(r.GetType() == typeof(Quiz) ? "Quiz - " : "")@r.Title</div>
-                            <div class="overflow-hidden text-only" style="max-height: 3rem; line-height: 1.5rem;">@Html.Raw(r.Content)</div>
-                        </a>
-                    </div>
-                </div>
-            }
-        </div>
-    }
 
 
-</div>
+    </div>
 }
