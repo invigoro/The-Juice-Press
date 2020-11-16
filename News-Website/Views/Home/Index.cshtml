@@ -32,7 +32,7 @@
                         <div class="col-12 col-lg-6 @(!iseven ? "order-lg-1" : "order-lg-0")">
                             <div class="row mb-3 pb-3 border-bottom">
                                 <div class="col">
-                                    <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@headline.UrlTitle()">
+                                    <a class="article-link" asp-action="details" asp-controller="@(typeof(Quiz).IsInstanceOfType(headline) ? "quiz" : "articles")" asp-route-id="@headline.UrlTitle()">
                                         <img src="@headline.CoverImage.Url" class="img-fluid d-block mx-auto mb-3" style="max-height: 300px;" />
                                         <div class="h2 text-justify">@(typeof(Quiz).IsInstanceOfType(headline) ? "Quiz - " : "")@headline.Title</div>
                                         <div class="overflow-hidden text-only" style="max-height: 6rem; line-height: 1.5rem;">@Html.Raw(headline.Content)</div>
@@ -46,7 +46,7 @@
                                 var r = remainder.ElementAt(j);
                                 <div class="row mb-3 pb-3 border-bottom">
                                     <div class="col">
-                                        <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@r.UrlTitle()">
+                                        <a class="article-link" asp-action="details" asp-controller="@(typeof(Quiz).IsInstanceOfType(r) ? "quiz" : "articles")" asp-route-id="@r.UrlTitle()">
                                             <div class="h2 text-justify">@(typeof(Quiz).IsInstanceOfType(r) ? "Quiz - " : "")@r.Title</div>
                                             <div class="overflow-hidden text-only" style="max-height: 3rem; line-height: 1.5rem;">@Html.Raw(r.Content)</div>
                                         </a>
@@ -78,7 +78,7 @@
                 {
                     <div class="row mb-3 pb-3 border-bottom">
                         <div class="col">
-                            <a class="article-link" asp-action="details" asp-controller="articles" asp-route-id="@r.UrlTitle()">
+                            <a class="article-link" asp-action="details" asp-controller="@(typeof(Quiz).IsInstanceOfType(r) ? "quiz" : "articles")" asp-route-id="@r.UrlTitle()">
                                 <div class="h2 text-justify">@(typeof(Quiz).IsInstanceOfType(r) ? "Quiz - " : "")@r.Title</div>
                                 <div class="overflow-hidden text-only" style="max-height: 3rem; line-height: 1.5rem;">@Html.Raw(r.Content)</div>
                             </a>
